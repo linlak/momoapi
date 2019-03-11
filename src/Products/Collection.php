@@ -3,6 +3,7 @@ namespace Momo\MomoApp\Products;
 use Momo\MomoApp\MomoApp;
 use Momo\MomoApp\Models\RequestToPay;
 use Momo\MomoApp\Commons\MomoLinks;
+use Momo\MomoApp\Commons\Constants;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
@@ -14,6 +15,7 @@ class Collection extends MomoApp
 		parent::__construct($apiKey,$apiSecret,$environ);
 	}
 	public function requestToken(){
+		$this->removeHeader(Constants::H_ENVIRON);
 		$request=new Request("GET",MomoLinks::TOKEN_URI,$this->headers);
 		return $this->send($request);
 	}
@@ -26,9 +28,9 @@ class Collection extends MomoApp
 		return $this->send($request);
 	}
 	public function requestToPay(RequestToPay $requestBody,$ref,$callbackUri=false){
-		$this->setHeaders('X-Reference-Id',$ref);
+		$this->setHeaders(Constants::H_REF_ID,$ref);
 		if (false!==$callbackUri) {
-			$this->setHeaders('X-Callback-Url',$callbackUri);
+			$this->setHeaders(Constants::H_CALL_BACK,$callbackUri);
 		}
 		$request=new Request("POST",MomoLinks::REQUEST_TO_PAT_URI,$this->headers,$requestBody->generateRequestBody());
 		return $this->send($request);

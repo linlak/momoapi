@@ -3,6 +3,7 @@ namespace Momo\MomoApp;
 use GuzzleHttp\Client;
 use Momo\MomoApp\Models\RequestToPay;
 use Momo\MomoApp\Commons\MomoLinks;
+use Momo\MomoApp\Commons\Constants;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
@@ -13,11 +14,11 @@ abstract class MomoApp{
 	protected $baseUri = 'https://ericssonbasicapi2.azure-api.net/';
 	protected $apiKey,$apiSecret;
 	protected $headers=[
-		"Authorization"=>"",
-		"X-Target-Environment"=>"",
-		"Ocp-Apim-Subscription-Key"=>""
+		Constants::H_AUTH=>"",
+		Constants::H_ENVIRON=>"",
+		Constants::H_OCP_APIM=>""
 	];
-	protected $_client;
+	private $_client;
 	public function __construct($apiKey,$apiSecret,$environ='sandbox'){
 		$this->apiKey=$apiKey;
 		$this->apiSecret=$apiSecret;
@@ -32,10 +33,10 @@ abstract class MomoApp{
 		]);
 	} 
 	private function genHeaders(){
-		$this->setHeaders('Authorization',base64_encode($this->apiKey));
-		$this->setHeaders('X-Target-Environment',$this->environ);
-		$this->setHeaders('Content-Type','application/json');
-		$this->setHeaders('Ocp-Apim-Subscription-Key',$this->apiKey);
+		$this->setHeaders(Constants::H_AUTH,base64_encode($this->apiKey));
+		$this->setHeaders(Constants::H_ENVIRON,$this->environ);
+		$this->setHeaders(Constants::H_C_TYPE,'application/json');
+		$this->setHeaders(Constants::H_OCP_APIM,$this->apiKey);
 	}
 	public function setHeaders($key,$value){
 		$this->headers[$key]=$value;
