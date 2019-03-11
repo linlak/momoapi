@@ -17,4 +17,37 @@ class Remittances extends MomoApp
 	{
 		parent::__construct($apiKey,$apiSecret,$environ);
 	}
+		public function requestToken($apiUserId){
+		$this->apiUserId=$apiUserId;
+		$this->setAuth();
+		$this->removeHeader(Constants::H_ENVIRON);
+		// $this->removeHeader(Constants::H_AUTH);
+		$request=new Request("GET",MomoLinks::R_TOKEN_URI,$this->headers);
+		return $this->send($request);
+	}
+	public function transferStatus($resourceId){
+		$this->setAuth();
+		$request=new Request("GET",MomoLinks::R_TRANSFER_URI.'/'.$resourceId,$this->headers);
+		return $this->send($request);
+	}
+	public function acountHolder($accountHolderIdType,$accountHolderId){
+		$request=new Request("GET",MomoLinks::R_ACCOUNT_HOLDER_URI.$accountHolderIdType.'/'.$accountHolderId.'/active',$this->headers);
+		return $this->send($request);
+	}
+	public function transfer(RequestToPay $requestBody,$ref,$callbackUri=false){
+		$this->setHeaders(Constants::H_REF_ID,$ref);
+		$this->setAuth();
+		if (false!==$callbackUri) {
+			$this->setHeaders(Constants::H_CALL_BACK,$callbackUri);
+		}
+		$request=new Request("POST",MomoLinks::R_TRANSFER_URI,$this->headers,$requestBody->generateRequestBody());
+		return $this->send($request);
+	}
+	public function requestBalance(){
+		// $this->setAuth();
+		$this->removeHeader(Constants::H_AUTH);
+		$request=new Request("GET",MomoLinks::R_BALANCE_URI,$this->headers);
+		return $this->send($request);
+		
+	}
 }
