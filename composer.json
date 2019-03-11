@@ -1,0 +1,24 @@
+{
+    "name": "linlak/momoapi",
+    "description": "Momo php library is small php package that helps developers to access the momo api.",
+    "keywords": ["mtnmomo", "momoapi", "momolibrary"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Linus Nowomukama",
+            "email": "nowomukama.linlak.linus2@gmail.com"
+        }
+    ],
+    "type": "project",
+    "require": {
+		"php": ">=5.4"
+    },
+	"require-dev": {
+		"phpunit/phpunit": "5.2.*"
+    },
+	"autoload": {
+        "psr-4": {
+            "Momo\\MomoApp\\": "src/"
+        }
+    }
+}
