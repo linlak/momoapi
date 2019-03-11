@@ -1,6 +1,6 @@
 {
     "name": "linlak/momoapi",
-    "description": "Momo php library is small php package that helps developers to access the momo api.",
+    "description": "Momo php library is small php package that helps developers to integrate the momo api their project (s).",
     "keywords": ["mtnmomo", "momoapi", "momolibrary"],
     "license": "MIT",
     "authors": [
