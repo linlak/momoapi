@@ -30,7 +30,8 @@ abstract class MomoApp{
 			[
 				'base_uri'=>MomoLinks::BASE_URI,
     			'verify' => false,
-    			'timout'=>40
+    			'timout'=>40,
+    			'allow_redirects' => false
 			
 		]);
 	} 
