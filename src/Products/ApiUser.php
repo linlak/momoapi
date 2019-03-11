@@ -7,7 +7,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
 /**
-* 
+* genRequest
 */
 class ApiUser extends MomoApp
 {
@@ -21,7 +21,6 @@ class ApiUser extends MomoApp
 		$this->setHeaders(Constants::H_REF_ID,$uid);
 		$this->removeHeader(Constants::H_AUTH);
 		$this->removeHeader(Constants::H_ENVIRON);
-		$request=new Request("POST",MomoLinks::USER_URI,$this->headers,"{ providerCallbackHost: ".$callbackUri."}");
-		return $this->send($request);		
+		return $this->send($this->genRequest("POST",MomoLinks::USER_URI,"{ providerCallbackHost: ".$callbackUri."}"));		
 	}
 }

@@ -20,18 +20,15 @@ class Collection extends MomoApp
 		$this->apiUserId=$apiUserId;
 		$this->setAuth();
 		$this->removeHeader(Constants::H_ENVIRON);
-		$request=new Request("GET",MomoLinks::TOKEN_URI,$this->headers);
-		$promise=$this->send($request);
+		$promise=$this->send($this->genRequest("GET",MomoLinks::TOKEN_URI));
 		return $promise;
 	}
 	public function requestToPayStatus($resourceId){
 		$this->setAuth();
-		$request=new Request("GET",MomoLinks::REQUEST_TO_PAT_URI.'/'.$resourceId,$this->headers);
-		return $this->send($request);
+		return $this->send($this->genRequest("GET",MomoLinks::REQUEST_TO_PAT_URI.'/'.$resourceId));
 	}
-	public function acountHolder($accountHolderIdType,$accountHolderId){
-		$request=new Request("GET",MomoLinks::ACOUNT_HOLDER_URI.$accountHolderIdType.'/'.$accountHolderId.'/active',$this->headers);
-		return $this->send($request);
+	public function acountHolder($accountHolderIdType,$accountHolderId){		
+		return $this->send($this->genRequest("GET",MomoLinks::ACOUNT_HOLDER_URI.$accountHolderIdType.'/'.$accountHolderId.'/active'));
 	}
 	public function requestToPay(RequestToPay $requestBody,$ref,$callbackUri=false){
 		$this->setHeaders(Constants::H_REF_ID,$ref);
@@ -39,13 +36,10 @@ class Collection extends MomoApp
 		if (false!==$callbackUri) {
 			$this->setHeaders(Constants::H_CALL_BACK,$callbackUri);
 		}
-		$request=new Request("POST",MomoLinks::REQUEST_TO_PAT_URI,$this->headers,$requestBody->generateRequestBody());
-		return $this->send($request);
+		return $this->send($this->genRequest("POST",MomoLinks::REQUEST_TO_PAT_URI,$requestBody->generateRequestBody()));
 	}
 	public function requestBalance(){
 		$this->setAuth();
-		$request=new Request("GET",MomoLinks::BALANCE_URI,$this->headers);
-		return $this->send($request);
-		
+		return $this->send($this->genRequest("GET",MomoLinks::BALANCE_URI));		
 	}
 }

@@ -8,7 +8,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
 /**
-* 
+* genRequest
 */
 class Remittances extends MomoApp
 {
@@ -21,18 +21,14 @@ class Remittances extends MomoApp
 		$this->apiUserId=$apiUserId;
 		$this->setAuth();
 		$this->removeHeader(Constants::H_ENVIRON);
-		// $this->removeHeader(Constants::H_AUTH);
-		$request=new Request("GET",MomoLinks::R_TOKEN_URI,$this->headers);
-		return $this->send($request);
+		return $this->send($this->genRequest("GET",MomoLinks::R_TOKEN_URI));
 	}
 	public function transferStatus($resourceId){
 		$this->setAuth();
-		$request=new Request("GET",MomoLinks::R_TRANSFER_URI.'/'.$resourceId,$this->headers);
-		return $this->send($request);
+		return $this->send($this->genRequest("GET",MomoLinks::R_TRANSFER_URI.'/'.$resourceId));
 	}
-	public function acountHolder($accountHolderIdType,$accountHolderId){
-		$request=new Request("GET",MomoLinks::R_ACCOUNT_HOLDER_URI.$accountHolderIdType.'/'.$accountHolderId.'/active',$this->headers);
-		return $this->send($request);
+	public function acountHolder($accountHolderIdType,$accountHolderId){		
+		return $this->send($this->genRequest("GET",MomoLinks::R_ACCOUNT_HOLDER_URI.$accountHolderIdType.'/'.$accountHolderId.'/active'));
 	}
 	public function transfer(RequestToPay $requestBody,$ref,$callbackUri=false){
 		$this->setHeaders(Constants::H_REF_ID,$ref);
@@ -40,14 +36,11 @@ class Remittances extends MomoApp
 		if (false!==$callbackUri) {
 			$this->setHeaders(Constants::H_CALL_BACK,$callbackUri);
 		}
-		$request=new Request("POST",MomoLinks::R_TRANSFER_URI,$this->headers,$requestBody->generateRequestBody());
-		return $this->send($request);
+		return $this->send($this->genRequest("POST",MomoLinks::R_TRANSFER_URI,$requestBody->generateRequestBody()));
 	}
 	public function requestBalance(){
-		// $this->setAuth();
-		$this->removeHeader(Constants::H_AUTH);
-		$request=new Request("GET",MomoLinks::R_BALANCE_URI,$this->headers);
-		return $this->send($request);
+		$this->setAuth();
+		return $this->send($this->genRequest("GET",MomoLinks::R_BALANCE_URI));
 		
 	}
 }

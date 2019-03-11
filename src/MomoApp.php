@@ -62,7 +62,17 @@ abstract class MomoApp{
 		$this->setHeaders(Constants::H_AUTH,base64_encode($this->apiKey));
 	}
 
-
+	public function genRequest($mtd,$url,$body=false){
+		if (false==$body) {
+			$request=new Request($mtd,$url,$this->headers);
+		}else{
+			if (is_array($body)) {
+				$body=json_encode($body);
+			}
+			$request=new Request($mtd,$url,$this->headers,$body);
+		}
+		return $request;
+	}
 	public function send(Request $request){
 		
 		$promise=$this->_client->sendAsync($request)
