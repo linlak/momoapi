@@ -18,6 +18,7 @@ class Collection extends MomoApp
 		$this->apiUserId=$apiUserId;
 		$this->setAuth();
 		$this->removeHeader(Constants::H_ENVIRON);
+		// $this->removeHeader(Constants::H_AUTH);
 		$request=new Request("GET",MomoLinks::TOKEN_URI,$this->headers);
 		return $this->send($request);
 	}
@@ -40,7 +41,8 @@ class Collection extends MomoApp
 		return $this->send($request);
 	}
 	public function requestBalance(){
-		$this->setAuth();
+		// $this->setAuth();
+		$this->removeHeader(Constants::H_AUTH);
 		$request=new Request("GET",MomoLinks::BALANCE_URI,$this->headers);
 		return $this->send($request);
 		
