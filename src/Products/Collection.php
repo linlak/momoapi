@@ -14,12 +14,15 @@ class Collection extends MomoApp
 	{
 		parent::__construct($apiKey,$apiSecret,$environ);
 	}
-	public function requestToken(){
+	public function requestToken($apiUserId){
+		$this->apiUserId=$apiUserId;
+		$this->setAuth();
 		$this->removeHeader(Constants::H_ENVIRON);
 		$request=new Request("GET",MomoLinks::TOKEN_URI,$this->headers);
 		return $this->send($request);
 	}
 	public function requestToPayStatus($resourceId){
+		$this->setAuth();
 		$request=new Request("GET",MomoLinks::REQUEST_TO_PAT_URI.'/'.$resourceId,$this->headers);
 		return $this->send($request);
 	}
@@ -29,6 +32,7 @@ class Collection extends MomoApp
 	}
 	public function requestToPay(RequestToPay $requestBody,$ref,$callbackUri=false){
 		$this->setHeaders(Constants::H_REF_ID,$ref);
+		$this->setAuth();
 		if (false!==$callbackUri) {
 			$this->setHeaders(Constants::H_CALL_BACK,$callbackUri);
 		}
@@ -36,6 +40,7 @@ class Collection extends MomoApp
 		return $this->send($request);
 	}
 	public function requestBalance(){
+		$this->setAuth();
 		$request=new Request("GET",MomoLinks::BALANCE_URI,$this->headers);
 		return $this->send($request);
 		

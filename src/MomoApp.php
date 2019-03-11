@@ -13,6 +13,7 @@ abstract class MomoApp{
 	protected $apiVersion='v1_0';
 	protected $baseUri = 'https://ericssonbasicapi2.azure-api.net/';
 	protected $apiKey,$apiSecret;
+	protected $apiUserId='';
 	protected $headers=[
 		Constants::H_AUTH=>"",
 		Constants::H_ENVIRON=>"",
@@ -32,8 +33,7 @@ abstract class MomoApp{
 			
 		]);
 	} 
-	private function genHeaders(){
-		$this->setHeaders(Constants::H_AUTH,base64_encode($this->apiKey));
+	private function genHeaders(){		
 		$this->setHeaders(Constants::H_ENVIRON,$this->environ);
 		$this->setHeaders(Constants::H_C_TYPE,'application/json');
 		$this->setHeaders(Constants::H_OCP_APIM,$this->apiKey);
@@ -41,7 +41,9 @@ abstract class MomoApp{
 	public function setHeaders($key,$value){
 		$this->headers[$key]=$value;
 	}
-	
+	protected function setAuth(){
+		$this->setHeaders(Constants::H_AUTH,base64_encode($this->apiKey));
+	}
 
 
 	public function send(Request $request){
@@ -55,6 +57,9 @@ abstract class MomoApp{
 		}
 	}
 	public function removeHeader($key){
+		if (!array_key_exists($key, $this->headers)) {
+			return;
+		}
 		unset($this->headers[$key]);
 	}
 	
