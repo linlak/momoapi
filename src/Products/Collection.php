@@ -6,6 +6,7 @@ use Momo\MomoApp\Commons\MomoLinks;
 use Momo\MomoApp\Commons\Constants;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7;
+use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
 class Collection extends MomoApp
 {
@@ -15,12 +16,14 @@ class Collection extends MomoApp
 		parent::__construct($apiKey,$apiSecret,$environ);
 	}
 	public function requestToken($apiUserId){
+		
 		$this->apiUserId=$apiUserId;
 		$this->setAuth();
 		$this->removeHeader(Constants::H_ENVIRON);
 		// $this->removeHeader(Constants::H_AUTH);
 		$request=new Request("GET",MomoLinks::TOKEN_URI,$this->headers);
-		return $this->send($request);
+		$promise=$this->send($request);
+		return $promise;
 	}
 	public function requestToPayStatus($resourceId){
 		$this->setAuth();

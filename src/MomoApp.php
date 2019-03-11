@@ -6,6 +6,7 @@ use Momo\MomoApp\Commons\MomoLinks;
 use Momo\MomoApp\Commons\Constants;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7;
+use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
 abstract class MomoApp{
 
@@ -41,20 +42,40 @@ abstract class MomoApp{
 	public function setHeaders($key,$value){
 		$this->headers[$key]=$value;
 	}
+	protected function passResponse(ResponseInterface $response){
+		// echo Psr7\str($response);
+
+		if ($response!==null) {
+
+			$output=[
+				"status_code"=>$response->getStatusCode(),
+				"status_phrase"=>$response->getReasonPhrase(),				
+			];
+			$body=$response->getBody();
+			$output['data']=json_decode($body->getContents(),1);
+			return $output;
+		}
+		return false;
+	}
 	protected function setAuth(){
 		$this->setHeaders(Constants::H_AUTH,base64_encode($this->apiKey));
 	}
 
 
 	public function send(Request $request){
-		try {
-			return $this->_client->send($request);
-		} catch (RequestException $e) {
-			echo Psr7\str($e->getRequest());
-		    if ($e->hasResponse()) {
-		        echo Psr7\str($e->getResponse());
-		    }
-		}
+		
+		$promise=$this->_client->sendAsync($request)
+			->then(function (ResponseInterface $res){
+				return $this->passResponse($res);
+			}, function (RequestException $e){
+				if ($e->hasResponse()) {
+					return $this->passResponse($e->getResponse());
+				}
+				return false;
+
+		});
+		return  $promise->wait();
+		
 	}
 	public function removeHeader($key){
 		if (!array_key_exists($key, $this->headers)) {
