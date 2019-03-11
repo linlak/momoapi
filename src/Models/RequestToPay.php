@@ -1,5 +1,5 @@
 <?php
-namespace Momo\Models\MomoApp;
+namespace Momo\MomoApp\Models;
 class RequestToPay{
 	
 	private $amount='';

@@ -9,7 +9,7 @@
             "email": "nowomukama.linlak.linus2@gmail.com"
         }
     ],
-    "type": "library",
+    "type": "project",
     "require": {
 		"php": ">=5.4",
         "guzzlehttp/guzzle": "^6.3"

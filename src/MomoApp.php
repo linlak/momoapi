@@ -1,55 +1,62 @@
-<?php namespace Momo\MomoApp;
+<?php 
+namespace Momo\MomoApp;
+use GuzzleHttp\Client;
+use Momo\MomoApp\Models\RequestToPay;
+use Momo\MomoApp\Commons\MomoLinks;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7;
+use GuzzleHttp\Exception\RequestException;
+abstract class MomoApp{
 
-
-class MomoApp{
-
-	private $environ="sandbox";//live
-	private $apiVersion='v1_0';
-	private $baseUri = 'https://ericssonbasicapi2.azure-api.net/';
-	private $apiKey,$apiSecret;
-	private $headers=[
+	protected $environ="sandbox";//live
+	protected $apiVersion='v1_0';
+	protected $baseUri = 'https://ericssonbasicapi2.azure-api.net/';
+	protected $apiKey,$apiSecret;
+	protected $headers=[
 		"Authorization"=>"",
 		"X-Target-Environment"=>"",
 		"Ocp-Apim-Subscription-Key"=>""
 	];
-/*"Authorization: "
--H "X-Target-Environment: "
--H "Ocp-Apim-Subscription-Key: {subscription key}"*/
-/*
-"Authorization: "
--H "X-Callback-Url: "
--H "X-Reference-Id: "
--H "X-Target-Environment: "
--H "Content-Type: application/json"
--H "Ocp-Apim-Subscription-Key: {subscription key}"*/
+	protected $_client;
 	public function __construct($apiKey,$apiSecret,$environ='sandbox'){
 		$this->apiKey=$apiKey;
 		$this->apiSecret=$apiSecret;
 		$this->environ=$environ;
 		$this->genHeaders();
+		$this->_client=new Client(
+			[
+				'base_uri'=>MomoLinks::BASE_URI,
+    			'verify' => false,
+    			'timout'=>40
+			
+		]);
 	} 
 	private function genHeaders(){
-		$this->setHeaders('Authorization','');
+		$this->setHeaders('Authorization',base64_encode($this->apiKey));
 		$this->setHeaders('X-Target-Environment',$this->environ);
 		$this->setHeaders('Content-Type','application/json');
 		$this->setHeaders('Ocp-Apim-Subscription-Key',$this->apiKey);
 	}
-	private function setHeaders($key,$value){
+	public function setHeaders($key,$value){
 		$this->headers[$key]=$value;
 	}
-	private function getCollectionsUri(){
-		return $this->baseUri.'collections/'.$this->apiVersion.'/';
-	}
+	
 
-	public function requestToPay(RequestToPay $requestBody,$ref,$callbackUri=false){
-		$this->setHeaders('X-Reference-Id',$ref);
-		if (false!==$callbackUri) {
-			$this->setHeaders('X-Callback-Url',$callbackUri);
+
+	public function send(Request $request){
+		try {
+			return $this->_client->send($request);
+		} catch (RequestException $e) {
+			echo Psr7\str($e->getRequest());
+		    if ($e->hasResponse()) {
+		        echo Psr7\str($e->getResponse());
+		    }
 		}
 	}
-	public function requestBalance(){}
-	public function requestToken(){}
-	public function requestToPayHook($resourceId){}
-	public function acountHolder($accountHolderIdType,$accountHolderId){}
+	public function removeHeader($key){
+		unset($this->headers[$key]);
+	}
+	
+	
 
 }
