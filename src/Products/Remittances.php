@@ -37,6 +37,9 @@ class Remittances extends MomoApp implements TransferInterface
 		if (false!==$callbackUri) {
 			$this->setHeaders(Constants::H_CALL_BACK,$callbackUri);
 		}
+		if ($this->environ==='sandbox') {
+			$requestBody->setCurrency('EUR');
+		}
 		return $this->send($this->genRequest("POST",MomoLinks::R_TRANSFER_URI,$requestBody->generateRequestBody()));
 	}
 	public function requestBalance(){

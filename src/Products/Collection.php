@@ -41,12 +41,15 @@ class Collection extends MomoApp implements CollectionInterface
 		if (false!==$callbackUri) {
 			$this->setHeaders(Constants::H_CALL_BACK,$callbackUri);
 		}
+		if ($this->environ==='sandbox') {
+			$requestBody->setCurrency('EUR');
+		}
 		return $this->send($this->genRequest("POST",MomoLinks::REQUEST_TO_PAT_URI,$requestBody->generateRequestBody()));
 	}
 	public function requestBalance(){
 		$this->setAuth();
 		// $this->removeHeader(Constants::H_AUTH);
-		$this->removeHeader(Constants::H_C_TYPE);
+		// $this->removeHeader(Constants::H_C_TYPE);
 		return $this->send($this->genRequest("GET",MomoLinks::BALANCE_URI));		
 	}
 }
