@@ -23,6 +23,12 @@ abstract class MomoApp implements MomoInterface{
 		Constants::H_OCP_APIM=>""
 	];
 	private $_client;
+	/**
+	*@param String (primaryKey) found on your momo profile
+	*@param String (secondaryKey) found on your momo profile
+	*@param String [sandbox,live]
+	*@internal
+	*/
 	public function __construct($apiKey,$apiSecret,$environ='sandbox'){
 		$this->apiKey=$apiKey;
 		$this->apiSecret=$apiSecret;
