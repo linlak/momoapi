@@ -15,6 +15,7 @@ abstract class MomoApp implements MomoInterface{
 	protected $baseUri = 'https://ericssonbasicapi2.azure-api.net/';
 	protected $apiPrimaryKey,$apiSecondary;
 	protected $apiKey='';
+	private $apiToken='';
 	protected $apiUserId='';
 	protected $headers=[
 		Constants::H_AUTH=>"",
@@ -44,6 +45,27 @@ abstract class MomoApp implements MomoInterface{
 			
 		]);
 	} 
+	public function gen_uuid() {
+	    return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+	        // 32 bits for "time_low"
+	        mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
+
+	        // 16 bits for "time_mid"
+	        mt_rand( 0, 0xffff ),
+
+	        // 16 bits for "time_hi_and_version",
+	        // four most significant bits holds version number 4
+	        mt_rand( 0, 0x0fff ) | 0x4000,
+
+	        // 16 bits, 8 bits for "clk_seq_hi_res",
+	        // 8 bits for "clk_seq_low",
+	        // two most significant bits holds zero and one for variant DCE1.1
+	        mt_rand( 0, 0x3fff ) | 0x8000,
+
+	        // 48 bits for "node"
+	        mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
+	    );
+	}
 	private function genHeaders(){		
 		$this->setHeaders(Constants::H_ENVIRON,$this->environ);
 		$this->setHeaders(Constants::H_C_TYPE,'application/json');
@@ -52,8 +74,14 @@ abstract class MomoApp implements MomoInterface{
 	public function setHeaders($key,$value){
 		$this->headers[$key]=$value;
 	}
+	public function setApiUserId($apiUserId){
+		$this->apiUserId=$apiUserId;
+	}
 	public function setApiKey($apiKey){
 		$this->apiKey=$apiKey;
+	}
+	public function setApiToken($apiToken){
+		$this->apiToken=$apiToken;
 	}
 	public function passResponse(ResponseInterface $response){
 		
@@ -70,7 +98,14 @@ abstract class MomoApp implements MomoInterface{
 		return false;
 	}
 	public function setAuth(){
-		$this->setHeaders(Constants::H_AUTH,base64_encode($this->apiPrimaryKey));
+		if (""===$this->apiToken) {
+			$this->setHeaders(Constants::H_AUTH,$this->apiToken);
+			return;
+		}
+		// $authKey=['api_key'=>$this->apiKey,'id'=>$this->apiUserId];
+		// $authKey=['api_key'=>$this->apiKey,'id'=>$this->apiUserId];
+		$authKey=base64_encode($this->apiUserId.':'./*base64_encode(*/$this->apiKey/*)*/);
+		$this->setHeaders(Constants::H_AUTH,/*'Basic '. */$authKey);
 	}
 
 	public function genRequest($mtd,$url,$body=false){

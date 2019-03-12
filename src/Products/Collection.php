@@ -25,7 +25,7 @@ class Collection extends MomoApp implements CollectionInterface
 		$this->apiUserId=$apiUserId;
 		$this->setAuth();
 		$this->removeHeader(Constants::H_ENVIRON);
-		$promise=$this->send($this->genRequest("GET",MomoLinks::TOKEN_URI));
+		$promise=$this->send($this->genRequest("POST",MomoLinks::TOKEN_URI));
 		return $promise;
 	}
 	public function requestToPayStatus($resourceId){
@@ -45,6 +45,8 @@ class Collection extends MomoApp implements CollectionInterface
 	}
 	public function requestBalance(){
 		$this->setAuth();
+		// $this->removeHeader(Constants::H_AUTH);
+		$this->removeHeader(Constants::H_C_TYPE);
 		return $this->send($this->genRequest("GET",MomoLinks::BALANCE_URI));		
 	}
 }

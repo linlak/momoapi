@@ -25,10 +25,14 @@ class ApiUser extends MomoApp
 		return $this->send($this->genRequest("POST",MomoLinks::USER_URI,$body));		
 	}
 	public function getApiUser($uid){
+		$this->removeHeader(Constants::H_AUTH);
+		$this->removeHeader(Constants::H_ENVIRON);
 		return $this->send($this->genRequest("GET",MomoLinks::USER_URI.'/'.$uid));
 	}
 	public function getApikey($uid){
-		return $this->send($this->genRequest("GET",MomoLinks::USER_URI.'/'.$uid.'/apikey'));
+		$this->removeHeader(Constants::H_AUTH);
+		$this->removeHeader(Constants::H_ENVIRON);
+		return $this->send($this->genRequest("POST",MomoLinks::USER_URI.'/'.$uid.'/apikey'));
 	}
 	public function apiUserHook(){}
 }
