@@ -1,5 +1,6 @@
 <?php
 namespace Momo\MomoApp\Products;
+
 use Momo\MomoApp\MomoApp;
 use Momo\MomoApp\Models\RequestToPay;
 use Momo\MomoApp\Commons\MomoLinks;
@@ -8,8 +9,12 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
-class Collection extends MomoApp
+
+use Momo\MomoApp\Interfaces\CollectionInterface;
+
+class Collection extends MomoApp implements CollectionInterface
 {
+	
 	
 	function __construct($apiKey,$apiSecret,$environ='sandbox')
 	{

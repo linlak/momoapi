@@ -7,10 +7,11 @@ use Momo\MomoApp\Commons\Constants;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
+use Momo\MomoApp\Interfaces\TransferInterface;
 /**
 * genRequest
 */
-class Disbursements extends MomoApp
+class Disbursements extends MomoApp implements TransferInterface
 {
 	
 	function __construct($apiKey,$apiSecret,$environ='sandbox')

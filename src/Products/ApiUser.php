@@ -23,4 +23,5 @@ class ApiUser extends MomoApp
 		$this->removeHeader(Constants::H_ENVIRON);
 		return $this->send($this->genRequest("POST",MomoLinks::USER_URI,"{ providerCallbackHost: ".$callbackUri."}"));		
 	}
+	public function apiUserHook(){}
 }

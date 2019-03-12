@@ -1,14 +1,14 @@
 <?php 
 namespace Momo\MomoApp;
 use GuzzleHttp\Client;
-use Momo\MomoApp\Models\RequestToPay;
+use Momo\MomoApp\Interfaces\MomoInterface;
 use Momo\MomoApp\Commons\MomoLinks;
 use Momo\MomoApp\Commons\Constants;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
-abstract class MomoApp{
+abstract class MomoApp implements MomoInterface{
 
 	protected $environ="sandbox";//live
 	protected $apiVersion='v1_0';
@@ -43,9 +43,8 @@ abstract class MomoApp{
 	public function setHeaders($key,$value){
 		$this->headers[$key]=$value;
 	}
-	protected function passResponse(ResponseInterface $response){
-		// echo Psr7\str($response);
-
+	public function passResponse(ResponseInterface $response){
+		
 		if ($response!==null) {
 
 			$output=[
@@ -58,7 +57,7 @@ abstract class MomoApp{
 		}
 		return false;
 	}
-	protected function setAuth(){
+	public function setAuth(){
 		$this->setHeaders(Constants::H_AUTH,base64_encode($this->apiKey));
 	}
 
@@ -82,7 +81,11 @@ abstract class MomoApp{
 				if ($e->hasResponse()) {
 					return $this->passResponse($e->getResponse());
 				}
-				return false;
+				return [
+					'status_code'=>$e->getCode(),
+					'status_phrase'=>"Connection Error"
+				];
+				
 
 		});
 		return  $promise->wait();

@@ -25,6 +25,7 @@ class MomoLinks
 	const D_BALANCE_URI="https://ericssonbasicapi2.azure-api.net/disbursement/v1_0/account/balance";
 	const D_ACCOUNT_HOLDER_URI="https://ericssonbasicapi2.azure-api.net/disbursement/v1_0/accountholder/";
 	//"{accountHolderIdType}/{accountHolderId}/active"; IDTYPES [msisdn, email, party_code]
+	
 	//remitence
 	const R_TOKEN_URI="https://ericssonbasicapi2.azure-api.net/remittance/token/";
 	const R_TRANSFER_URI="https://ericssonbasicapi2.azure-api.net/remittance/v1_0/transfer";
