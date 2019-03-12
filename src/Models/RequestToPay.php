@@ -33,6 +33,6 @@ class RequestToPay{
 			"payerMessage"=> $this->payerMessage,
 			"payeeNote"=> $this->payeeNote
 		];
-		return json_encode($output);
+		return json_encode($output,JSON_UNESCAPED_SLASHES);
 	}
 }

@@ -18,6 +18,8 @@ abstract class MomoApp implements MomoInterface{
 	protected $headers=[
 		Constants::H_AUTH=>"",
 		Constants::H_ENVIRON=>"",
+		// Constants::H_REF_ID=>"",
+		Constants::H_C_TYPE=>"",
 		Constants::H_OCP_APIM=>""
 	];
 	private $_client;
@@ -38,7 +40,7 @@ abstract class MomoApp implements MomoInterface{
 	private function genHeaders(){		
 		$this->setHeaders(Constants::H_ENVIRON,$this->environ);
 		$this->setHeaders(Constants::H_C_TYPE,'application/json');
-		$this->setHeaders(Constants::H_OCP_APIM,$this->apiKey);
+		$this->setHeaders(Constants::H_OCP_APIM,$this->apiKey/*.'.'.$this->apiSecret*/);
 	}
 	public function setHeaders($key,$value){
 		$this->headers[$key]=$value;
@@ -66,9 +68,9 @@ abstract class MomoApp implements MomoInterface{
 			$request=new Request($mtd,$url,$this->headers);
 		}else{
 			if (is_array($body)) {
-				$body=json_encode($body);
+				$body=json_encode($body,JSON_UNESCAPED_SLASHES);
 			}
-			$request=new Request($mtd,$url,$this->headers,$body);
+			$request=new Request($mtd,$url,$this->headers, $body);
 		}
 		return $request;
 	}
@@ -76,9 +78,11 @@ abstract class MomoApp implements MomoInterface{
 		
 		$promise=$this->_client->sendAsync($request)
 			->then(function (ResponseInterface $res){
+
 				return $this->passResponse($res);
-			}, function (RequestException $e){
-				if ($e->hasResponse()) {
+			}, function (RequestException $e){	
+			echo(Psr7\str($e->getRequest()));			
+				if ($e->hasResponse()) {					
 					return $this->passResponse($e->getResponse());
 				}
 				return [

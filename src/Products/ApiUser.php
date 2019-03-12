@@ -19,9 +19,11 @@ class ApiUser extends MomoApp
 	//apiUser
 	public function createApiUser($uid,$callbackUri){
 		$this->setHeaders(Constants::H_REF_ID,$uid);
+		// $this->setHeaders(Constants::H_CALL_BACK,$callbackUri);
 		$this->removeHeader(Constants::H_AUTH);
 		$this->removeHeader(Constants::H_ENVIRON);
-		return $this->send($this->genRequest("POST",MomoLinks::USER_URI,"{ providerCallbackHost: ".$callbackUri."}"));		
+		$body=['providerCallbackHost'=>$callbackUri];
+		return $this->send($this->genRequest("POST",MomoLinks::USER_URI,/*json_encode(*/$body/*)*/));		
 	}
 	public function apiUserHook(){}
 }
