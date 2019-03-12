@@ -3,7 +3,7 @@ namespace Momo\MomoApp\Interfaces;
 
 interface ProductCommonsInterface{
 	
-	public function requestToken($apiUserId);
+	public function requestToken();
 	public function requestBalance();
 	public function acountHolder($accountHolderIdType,$accountHolderId);
 	

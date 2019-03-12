@@ -20,11 +20,8 @@ class Collection extends MomoApp implements CollectionInterface
 	{
 		parent::__construct($apiKey,$apiSecret,$environ);
 	}
-	public function requestToken($apiUserId){
-		
-		$this->apiUserId=$apiUserId;
+	public function requestToken(){		
 		$this->setAuth();
-		$this->removeHeader(Constants::H_ENVIRON);
 		$promise=$this->send($this->genRequest("POST",MomoLinks::TOKEN_URI));
 		return $promise;
 	}
@@ -48,8 +45,6 @@ class Collection extends MomoApp implements CollectionInterface
 	}
 	public function requestBalance(){
 		$this->setAuth();
-		// $this->removeHeader(Constants::H_AUTH);
-		// $this->removeHeader(Constants::H_C_TYPE);
 		return $this->send($this->genRequest("GET",MomoLinks::BALANCE_URI));		
 	}
 }

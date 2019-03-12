@@ -18,10 +18,8 @@ class Disbursements extends MomoApp implements TransferInterface
 	{
 		parent::__construct($apiKey,$apiSecret,$environ);
 	}
-	public function requestToken($apiUserId){
-		$this->apiUserId=$apiUserId;
+	public function requestToken(){
 		$this->setAuth();
-		$this->removeHeader(Constants::H_ENVIRON);
 		return $this->send($this->genRequest("GET",MomoLinks::D_TOKEN_URI));
 	}
 	public function transferStatus($resourceId){

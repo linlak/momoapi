@@ -98,13 +98,17 @@ abstract class MomoApp implements MomoInterface{
 		return false;
 	}
 	public function setAuth(){
-		if (""===$this->apiToken) {
+		if (""!==$this->apiToken) {
 			$this->setHeaders(Constants::H_AUTH,$this->apiToken);
 			return;
 		}
 		
-		$authKey=/*base64_encode(*/$this->apiUserId/*)*/.''./*base64_encode(*/$this->apiKey/*))*/;
-		$this->setHeaders(Constants::H_AUTH,'Basic '. base64_encode($authKey));
+		$authKey=$this->apiUserId.':'.$this->apiKey;
+		// $authKey='"'.$this->apiUserId.'":"'.$this->apiKey.'"';
+		// $authKey='"'.$this->apiKey.'":"'.$this->apiUserId.'"';
+		$this->setHeaders(Constants::H_AUTH,base64_encode($authKey));
+		// $this->setHeaders(Constants::H_AUTH,'Basic '.base64_encode($authKey));
+		// $this->setHeaders(Constants::H_AUTH,'Bearer '.base64_encode($authKey));
 	}
 
 	public function genRequest($mtd,$url,$body=false){
