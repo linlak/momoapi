@@ -10,5 +10,6 @@ interface MomoInterface{
 	public function send(Request $request);
 	public function genRequest($mtd,$url,$body=false);
 	public function setAuth();
+	public function setApiKey($apiKey);
 	public function passResponse(ResponseInterface $response);
 }
