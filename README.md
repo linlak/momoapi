@@ -26,12 +26,8 @@ The following code snippet will help to create an **apiUser** this supports all 
  
 
 
-**Code Snippet ** 
 
-
-`
-	
-<?php
+`<?php
 
 	require_once {path-to-vendor}/vendor/autoload.php;
 
@@ -39,8 +35,6 @@ The following code snippet will help to create an **apiUser** this supports all 
 
 	$apiPrimaryKey="***** your primary key for on your profile *****";
 	$apiSecondaryKey="***** your secondary key for on your profile *****";
-
-
-
+	$apiUser=new ApiUser($apiPrimaryKey,$apiSecondaryKey);
 `
 
