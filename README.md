@@ -5,15 +5,18 @@ This is a php library that has been designed to help developers to easily integr
 
 
 ## Prerequisites ##
+
 This library depends on guzzlehttp to perform http requests.
+
 
 ##Installation##
 
 Use composer to manage your dependencies and download Momo Api Library:
 
-```bash
-composer require linlak/momoapi
-```
+
+	
+	composer require linlak/momoapi
+	
 ## Example ##
 **Creating ApiUser** [https://momodeveloper.mtn.com/docs/services/sandbox-provisioning-api](https://momodeveloper.mtn.com/docs/services/sandbox-provisioning-api "Read More")
 
