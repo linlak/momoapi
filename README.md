@@ -27,7 +27,7 @@ The following code snippet will help to create an **apiUser** this supports all 
 
 
 
-`<?php
+`
 
 	require_once {path-to-vendor}/vendor/autoload.php;
 
