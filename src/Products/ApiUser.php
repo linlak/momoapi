@@ -17,11 +17,11 @@ class ApiUser extends MomoApp
 		parent::__construct($apiKey,$apiSecret);
 	}
 	//apiUser
-	public function createApiUser($uid,$callbackUri){
+	public function createApiUser($uid,$providerCallbackHost){
 		$this->setHeaders(Constants::H_REF_ID,$uid);
 		$this->removeHeader(Constants::H_AUTH);
 		$this->removeHeader(Constants::H_ENVIRON);
-		$body=['providerCallbackHost'=>$callbackUri];
+		$body=['providerCallbackHost'=>$providerCallbackHost];
 		return $this->send($this->genRequest("POST",MomoLinks::USER_URI,$body));		
 	}
 	public function getApiUser($uid){
