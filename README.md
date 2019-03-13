@@ -1,12 +1,30 @@
 # Momo PHP Api Version 1.0 #
 
-This is a php library that has been designed to help developers to easily integrated the momo api into their system.
+This is a php library that has been designed to help developers to easily integrate the **momo api** into their system.
 
 
 
 ## Prerequisites ##
 
-This library depends on guzzlehttp to perform http requests.
+Before you start using this library we assume that you have good knowledge of php, composer and namespace autoloading. And have installed all the required software to enable run the examples provided here.
+
+You must also have an account on the Momo Developer Portal [https://momodeveloper.mtn.com/](https://momodeveloper.mtn.com/ "Visit page")
+
+**Software**
+
+The following software is require for better results:-
+
+- Testing server with php support e.g xampp,lampp,wampp etc.
+- Composer a dependency manager for php. [https://getcomposer.org/](https://getcomposer.org/ "Go to docs")
+- Text editor
+	- Sublime text
+	- NotePad ++
+	- Visual code etc.
+- A web browser e.g google chrome, mozilla etc.
+
+**Features**
+
+- This library depends on guzzlehttp to perform http requests.
 
 
 ## Installation ##
