@@ -8,15 +8,16 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
+use Momo\MomoApp\Products\Collection;
 /**
 * genRequest
 */
 class CollectionHooks 
 {
-	
-	function __construct()
+	private $collection;
+	function __construct(Collection $collection)
 	{
-		# code...
+		$this->collection=$collection;
 	}
 
 }
