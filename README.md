@@ -6,7 +6,7 @@ This library depends on guzzlehttp to perform http requests.
 Installation
 ------------
 
-Use composer to manage your dependencies and download PHP-JWT:
+Use composer to manage your dependencies and download Momo Api Library:
 
 ```bash
 composer require linlak/momoapi
