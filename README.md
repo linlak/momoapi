@@ -57,11 +57,11 @@ The following code snippet will help to create an **apiUser** this supports all 
 
 	use Momo\MomoApp\Products\ApiUser;
 
-	$apiPrimaryKey="{your primary key for on your profile}";
+	$apiPrimaryKey="{your primary key found on your profile}";
 
-	$apiSecondaryKey="{your secondary key for on your profile}";
+	$apiSecondaryKey="{your secondary key found on your profile}";
 
-	$apiUser=new ApiUser($apiPrimaryKey,$apiSecondaryKey);
+	$apiUser=new ApiUser($apiPrimaryKey,$apiSecondaryKey,"sandbox");
 	
 	
 
@@ -72,7 +72,7 @@ The following code snippet will help to create an **apiUser** this supports all 
 	<?php 
 		require_oce "api_user.php";
 
-		//let's create the UUID you willneed to save this id for letter user
+		//let's create the UUID you will need to save this id for later use.
 
 		$uid=$apiUser->gen_uuid();
 
@@ -85,8 +85,8 @@ The following code snippet will help to create an **apiUser** this supports all 
 	<?php
 		require_once "api_user.php";
 
-		$uid="{the uid created in user_id.php}";
-		$providerCallbackHost="{you host here}";
+		$uid="{the uid you created in user_id.php}";
+		$providerCallbackHost="{your host here}";
 
 		//array
 		$result=$apiUser->createApiUser($uid,$providerCallbackHost);
@@ -101,7 +101,7 @@ The following code snippet will help to create an **apiUser** this supports all 
 	<?php
 		require_once "api_user.php";
 
-		$uid="{the uid created in user_id.php}";
+		$uid="{the uid you created in user_id.php}";
 
 		//array
 		$result=$apiUser->getApiUser($uid);
@@ -116,7 +116,7 @@ The following code snippet will help to create an **apiUser** this supports all 
 	<?php
 		require_once "api_user.php";
 
-		$uid="{the uid created in user_id.php}";
+		$uid="{the uid you created in user_id.php}";
 	
 		$result=$apiUser->getApikey($uid);
 
