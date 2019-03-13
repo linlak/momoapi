@@ -113,8 +113,10 @@ abstract class MomoApp implements MomoInterface{
 
 	public function genRequest($mtd,$url,$body=false){
 		if (false==$body) {
+			$this->removeHeader(Constants::H_C_TYPE);
 			$request=new Request($mtd,$url,$this->headers);
 		}else{
+			$this->setHeaders(Constants::H_C_TYPE,'application/json');
 			if (is_array($body)) {
 				$body=json_encode($body,JSON_UNESCAPED_SLASHES);
 			}
