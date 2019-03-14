@@ -57,15 +57,15 @@ The following code snippet will help to create an **apiUser** this supports all 
 	
 	<?php
 
-	require_once "{path-to-vendor}/vendor/autoload.php";
+		require_once "{path-to-vendor}/vendor/autoload.php";
 
-	use Momo\MomoApp\Products\ApiUser;
+		use Momo\MomoApp\Products\ApiUser;
 
-	$apiPrimaryKey="{your primary key found on your profile}";
+		$apiPrimaryKey="{your primary key found on your profile}";
 
-	$apiSecondaryKey="{your secondary key found on your profile}";
+		$apiSecondaryKey="{your secondary key found on your profile}";
 
-	$apiUser=new ApiUser($apiPrimaryKey,$apiSecondaryKey,"sandbox");
+		$apiUser=new ApiUser($apiPrimaryKey,$apiSecondaryKey,"sandbox");
 	
 	
 
@@ -211,6 +211,7 @@ Now we are going to start performing requests. comment out objects for products 
 Now we have the token for our product's ***apiUser*** let's request balance
 
 ***balance.php***
+
 	<?php
 		require_once "momo_bootstrap.php";
 
@@ -287,6 +288,144 @@ Let's verify account holder
 
 		echo "<pre>";
 		print_r($result);
+
+We are now going to perform a requestToPay and requestToPayStatus.
+
+**Note:** These apply to Collection product only.
+
+***request_topay.php***
+
+	<?php
+		require_once "momo_bootstrap.php";
+		use Momo\MomoApp\Models\RequestToPay;
+		$uid="{uid you created in user_id.php}";//for Collection product
+
+		$apiKey="{apikey you created in create_apikey.php}"; //apiKey for Collection product
+		
+		$token="{token you created in token.php}";//token for Collection product
+
+		$collection->setApiUserId($uid);
+		$collection->setApiKey($apiKey);
+		$collection->setApiToken($token);
+		
+		//requestToPay object
+
+		$requestToPay=new RequestToPay("{externalId}","{amount}","{partyId}","{partyIdType}","{payeeNote}","{payerMessage}");
+
+		//to set the currency
+
+		$requestToPay->setCurrency("{curency}");// read docs for more info on supported currencies.
+
+		$callbackUrl="{url to your webhook}";
+
+		$ref=$collection->gen_uuid(); //you should save this for future reference
+
+		//array
+		$result=$collection->requestToPay($requestToPay,$ref,$callbackUrl);
+		//let's print the result
+
+		echo "<pre>";
+		print_r($result);
+
+
+
+***request_status.php***
+
+	<?php
+		require_once "momo_bootstrap.php";
+		use Momo\MomoApp\Models\RequestToPay;
+		$uid="{uid you created in user_id.php}";//for Collection product
+
+		$apiKey="{apikey you created in create_apikey.php}"; //apiKey for Collection product
+		
+		$token="{token you created in token.php}";//token for Collection product
+
+		$collection->setApiUserId($uid);
+		$collection->setApiKey($apiKey);
+		$collection->setApiToken($token);
+		
+
+		$ref="{ref you created in request_topay.php}";
+
+		//array
+		$result=$collection->requestToPayStatus($ref);
+		//let's print the result
+
+		echo "<pre>";
+		print_r($result);
+
+
+We are now going to perform a transfer and tranferStatus.
+
+**Note:** These apply to Remittances and Disbursements products only.
+
+***transfer.php***
+
+	<?php
+		require_once "momo_bootstrap.php";
+		use Momo\MomoApp\Models\RequestToPay;
+		$uid="{uid you created in user_id.php}";//for each product
+
+		$apiKey="{apikey you created in create_apikey.php}"; //create apiKey for each product
+		
+		$token="{token you created in token.php}";//create token for each product
+
+		//for Disbursements replace $remittances with $disbursements
+
+		$remittances->setApiUserId($uid);
+		$remittances->setApiKey($apiKey);
+		$remittances->setApiToken($token);
+		
+		//requestToPay object
+
+		$requestToPay=new RequestToPay("{externalId}","{amount}","{partyId}","{partyIdType}","{payeeNote}","{payerMessage}");
+
+		//to set the currency
+
+		$requestToPay->setCurrency("{curency}");// read docs for more info on supported currencies.
+
+		$callbackUrl="{url to your webhook}";
+
+		$ref=$remittances->gen_uuid(); //you should save this for future reference
+
+		//array
+
+		$result=$remittances->transfer($requestToPay,$ref,$callbackUrl);
+
+		//let's print the result
+
+		echo "<pre>";
+		print_r($result);
+
+***transfer_status.php***
+
+	<?php
+		require_once "momo_bootstrap.php";
+		use Momo\MomoApp\Models\RequestToPay;
+		$uid="{uid you created in user_id.php}";//for each product
+
+		$apiKey="{apikey you created in create_apikey.php}"; //create apiKey for each product
+		
+		$token="{token you created in token.php}";//create token for each product
+
+		//for Disbursements replace $remittances with $disbursements
+
+		$remittances->setApiUserId($uid);
+		$remittances->setApiKey($apiKey);
+		$remittances->setApiToken($token);
+		
+		$ref="{ref you created in transer.php}";
+
+		//array
+
+		$result=$remittances->transferStatus($ref);
+
+		//let's print the result
+
+		echo "<pre>";
+		print_r($result);
+
+
 
 ## To be fixed ##
 
