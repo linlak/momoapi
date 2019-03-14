@@ -17,11 +17,11 @@ class MomoLinks
 	const REQUEST_TO_PAT_URI='https://ericssonbasicapi2.azure-api.net/collection/v1_0/requesttopay';
 	const TOKEN_URI='https://ericssonbasicapi2.azure-api.net/collection/token/';
 	const BALANCE_URI='https://ericssonbasicapi2.azure-api.net/collection/v1_0/account/balance';
-	const ACOUNT_HOLDER_URI='https://ericssonbasicapi2.azure-api.net/collection/v1_0/accountholder/';// '{accountHolderIdType}/{accountHolderId}/active'
+	const ACOUNT_HOLDER_URI='https://ericssonbasicapi2.azure-api.net/collection/v1_0/accountholder/';
 
 	//disbursment
 	const D_TOKEN_URI="https://ericssonbasicapi2.azure-api.net/disbursement/token";
-	const D_TRANSFER_URI="https://ericssonbasicapi2.azure-api.net/disbursement/v1_0/transfer";// status resource id
+	const D_TRANSFER_URI="https://ericssonbasicapi2.azure-api.net/disbursement/v1_0/transfer";
 	const D_BALANCE_URI="https://ericssonbasicapi2.azure-api.net/disbursement/v1_0/account/balance";
 	const D_ACCOUNT_HOLDER_URI="https://ericssonbasicapi2.azure-api.net/disbursement/v1_0/accountholder/";
 	//"{accountHolderIdType}/{accountHolderId}/active"; IDTYPES [msisdn, email, party_code]
