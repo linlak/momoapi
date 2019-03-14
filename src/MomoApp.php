@@ -18,6 +18,7 @@ abstract class MomoApp implements MomoInterface{
 	private $apiToken='';
 	protected $apiUserId='';
 	protected $headers=[
+		"Content-Length"=>0,
 		Constants::H_AUTH=>"",
 		Constants::H_ENVIRON=>"",
 		// Constants::H_REF_ID=>"",
@@ -40,8 +41,7 @@ abstract class MomoApp implements MomoInterface{
 			[
 				'base_uri'=>MomoLinks::BASE_URI,
     			'verify' => false,
-    			'timout'=>40,
-    			'allow_redirects' => false
+    			'timout'=>40
 			
 		]);
 	} 
@@ -99,7 +99,7 @@ abstract class MomoApp implements MomoInterface{
 	}
 	public function setAuth(){
 		if (""!==$this->apiToken) {
-			$this->setHeaders(Constants::H_AUTH,/*'Basic'.*/$this->apiToken);
+			$this->setHeaders(Constants::H_AUTH,$this->apiToken);
 			return;
 		}else{
 		
@@ -109,14 +109,16 @@ abstract class MomoApp implements MomoInterface{
 	}
 
 	public function genRequest($mtd,$url,$body=false){
-		if (false==$body) {
+		if (false===$body) {
 			$this->removeHeader(Constants::H_C_TYPE);
 			$request=new Request($mtd,$url,$this->headers);
 		}else{
 			$this->setHeaders(Constants::H_C_TYPE,'application/json');
 			if (is_array($body)) {
-				$body=json_encode($body,JSON_UNESCAPED_SLASHES);
+				$body=json_encode($body,JSON_UNESCAPED_SLASHES);				
 			}
+			$this->setHeaders("Content-Length",strlen($body));
+
 			$request=new Request($mtd,$url,$this->headers, $body);
 		}
 		return $request;
@@ -128,8 +130,9 @@ abstract class MomoApp implements MomoInterface{
 			// echo(Psr7\str($res));	
 				return $this->passResponse($res);
 			}, function (RequestException $e){	
-			echo(Psr7\str($e->getRequest()));	
-				if ($e->hasResponse()) {					
+			echo(Psr7\str($e->getRequest())."\n\r");	
+				if ($e->hasResponse()) {		
+						// echo(Psr7\str($e->getResponse())."\n\r");		
 					return $this->passResponse($e->getResponse());
 				}
 				return [
