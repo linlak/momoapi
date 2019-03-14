@@ -4,9 +4,7 @@ use Momo\MomoApp\MomoApp;
 use Momo\MomoApp\Models\RequestToPay;
 use Momo\MomoApp\Commons\MomoLinks;
 use Momo\MomoApp\Commons\Constants;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7;
-use GuzzleHttp\Exception\RequestException;
+
 use Momo\MomoApp\Interfaces\TransferInterface;
 /**
 * genRequest
