@@ -178,6 +178,10 @@ Now we are going to start performing requests. comment out objects for products 
 ***token.php***
 
 	<?php
+		/*
+			requesting the token token takes alot of time so is set the time to 500 secends to prevent time exception
+		*/
+		set_time_limit(500);
 		require_once "momo_bootstrap.php";
 
 		$uid="{uid you created in user_id.php}";//create for each product
