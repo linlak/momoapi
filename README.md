@@ -44,7 +44,11 @@ The following code snippet will help to create an **apiUser** this supports all 
 - Remittances [https://momodeveloper.mtn.com/docs/services/remittance](https://momodeveloper.mtn.com/docs/services/remittance "Read More")
 - Disbursements [https://momodeveloper.mtn.com/docs/services/disbursement](https://momodeveloper.mtn.com/docs/services/disbursement "Read More") 
  
+**Note:**
 
+
+
+> Whenever we show text in curry brackets ("{text}") please replace that text with the required data without brackets.
 
 
 ***api_user.php***
@@ -53,7 +57,7 @@ The following code snippet will help to create an **apiUser** this supports all 
 	
 	<?php
 
-	require_once {path-to-vendor}/vendor/autoload.php;
+	require_once "{path-to-vendor}/vendor/autoload.php";
 
 	use Momo\MomoApp\Products\ApiUser;
 
@@ -127,6 +131,53 @@ The following code snippet will help to create an **apiUser** this supports all 
 
 
 If you are successful up to this stage, you have managed to create the **apiUserId** and **apiUserKey**
+
+3/13/2019 9:04:30 AM
+
+## Let's Go to another level ##
+
+We are going to perform the following tasks here:
+
+- fetch token
+- request balance
+- verify accountHolder
+
+If you have read the Momo developer docs carefully, you noticed that the above requests apply to all the products i.e 
+
+- Collection
+- Remittances
+- Disbursements
+
+We are going to test with the all packages
+
+Let's create a file name *momo_bootstrap.php* and define initialize all of our product classes;
+
+***momo_bootstrap.php***
+
+	<?php
+		require_once "{{path-to-vendor}/vendor/autoload.php}";
+
+		//let's include our namespaces
+		use Momo\MomoApp\Products\Collection;
+		use Momo\MomoApp\Products\Remittances;
+		use Momo\MomoApp\Products\Disbursements;
+
+		$collection=new Collection("{collection primaryKey}",{collection secondaryKey},"sandbox");
+
+		$remittances=new Remittances("{remittances primaryKey}",{remittances secondaryKey},"sandbox");
+
+		$disbursements=new Disbursements("{disbursements primaryKey}",{disbursements secondaryKey},"sandbox");
+
+Now we are going to start performing requests.
+
+**Note:**
+> $uid, $apiKey must be specific for each product. There you have to initialize the $apiUser object in api_user.php using respective primaryKey,secondaryKey combinations and save them somewhere for future reference.
+
+
+***token.php***
+
+	<?php
+		require_once "momo_bootstrap.php";
 
 ## To be fixed ##
 
