@@ -155,7 +155,7 @@ Let's create a file name *momo_bootstrap.php* and define initialize all of our p
 ***momo_bootstrap.php***
 
 	<?php
-		require_once "{{path-to-vendor}/vendor/autoload.php}";
+		require_once "{path-to-vendor}/vendor/autoload.php}";
 
 		//let's include our namespaces
 		use Momo\MomoApp\Products\Collection;
@@ -430,3 +430,4 @@ We are now going to perform a transfer and tranferStatus.
 ## To be fixed ##
 
 This library can only create the api user please don't hesitate to inform me when you find a fix/solution. 
+[mailto:ugsalons@gmail.com](mailto:ugsalons@gmail.com "Send Email")
