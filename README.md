@@ -97,7 +97,7 @@ The following code snippet will help to create an **apiUser** this supports all 
 		
 		//let's print the result;
 
-		echo "<pre>;
+		echo "<pre>";
 			print_r($result);
 
 ***api_userinfo.php***
@@ -112,7 +112,7 @@ The following code snippet will help to create an **apiUser** this supports all 
 		
 		//let's print the result;
 
-		echo "<pre>;
+		echo "<pre>";
 			print_r($result);
 
 ***create_apikey.php***
@@ -126,7 +126,7 @@ The following code snippet will help to create an **apiUser** this supports all 
 
 		//let print the result but u will need to save the apiKey somewhere.
 
-		echo "<pre>;
+		echo "<pre>";
 			print_r($result);
 
 
@@ -168,16 +168,125 @@ Let's create a file name *momo_bootstrap.php* and define initialize all of our p
 
 		$disbursements=new Disbursements("{disbursements primaryKey}",{disbursements secondaryKey},"sandbox");
 
-Now we are going to start performing requests.
+Now we are going to start performing requests. comment out objects for products you haven't subscribed yet in the above code snippet ***momo_bootstrap.php***.
 
 **Note:**
-> $uid, $apiKey must be specific for each product. There you have to initialize the $apiUser object in api_user.php using respective primaryKey,secondaryKey combinations and save them somewhere for future reference.
+> $uid, $apiKey must be specific for each product.
+>  There you have to initialize the $apiUser object in api_user.php using respective primaryKey,secondaryKey combinations and save them somewhere for future reference.
 
 
 ***token.php***
 
 	<?php
 		require_once "momo_bootstrap.php";
+
+		$uid="{uid you created in user_id.php}";//create for each product
+
+		$apiKey="{apikey you created in create_apikey.php}"; //create apiKey for each product
+
+		$collection->setApiUserId($uid);
+		$collection->setApiKey($apiKey);
+
+		//array
+		$result=$collection->requestToken();
+
+		/*to request tokens for other products, use the 
+		* pruduct's object defined in momo_bootstrap.php
+		* e.g
+		*/
+		//$remittances->setApiUserId($uid);
+		//$remittances->setApiKey($apiKey);
+		//$result=$remittances->requestToken(); 
+		//or
+		//$disbursements->setApiUserId($uid);
+		//$disbursements->setApiKey($apiKey);
+		//$result=$disbursements->requestToken();
+
+		//let's print the result but you will need to save the token and expiry time somewhere for reference;
+
+		echo "<pre>";
+		print_r($result);
+		
+		
+Now we have the token for our product's ***apiUser*** let's request balance
+
+***balance.php***
+	<?php
+		require_once "momo_bootstrap.php";
+
+		$uid="{uid you created in user_id.php}";//create for each product
+
+		$apiKey="{apikey you created in create_apikey.php}"; //create apiKey for each product
+		
+		$token="{token you created in token.php}";//create for each product you subscribed
+
+		$collection->setApiUserId($uid);
+		$collection->setApiKey($apiKey);
+		$collection->setApiToken($token);
+
+		//array
+		$result=$collection->requestBalance();
+
+		/*to request balance for other products, use the 
+		* pruduct's object defined in momo_bootstrap.php
+		* e.g
+		*/
+		//$remittances->setApiUserId($uid);
+		//$remittances->setApiKey($apiKey);
+		//$remittances->setApiToken($token);
+		//$result=$remittances->requestBalance(); 
+		//or
+		//$disbursements->setApiUserId($uid);
+		//$disbursements->setApiKey($apiKey);
+		//$disbursements->setApiToken($token);
+		//$result=$disbursements->requestBalance();
+
+		//let's print the result
+
+		echo "<pre>";
+		print_r($result);
+
+Let's verify account holder
+
+***account_holder.php***
+
+	<?php
+		require_once "momo_bootstrap.php";
+
+		$uid="{uid you created in user_id.php}";//create for each product
+
+		$apiKey="{apikey you created in create_apikey.php}"; //create apiKey for each product
+		
+		$token="{token you created in token.php}";//create for each product you subscribed
+
+		$acoutHolderId="{acoutHolderId}";
+		$acoutHolderIdType="{acoutHolderIdType}";
+
+		$collection->setApiUserId($uid);
+		$collection->setApiKey($apiKey);
+		$collection->setApiToken($token);
+
+		//array
+		$result=$collection->acountHolder($accountHolderIdType,$accountHolderId);
+
+		/*to request balance for other products, use the 
+		* pruduct's object defined in momo_bootstrap.php
+		* e.g
+		*/
+		//$remittances->setApiUserId($uid);
+		//$remittances->setApiKey($apiKey);
+		//$remittances->setApiToken($token);
+		//$result=$remittances->acountHolder($accountHolderIdType,$accountHolderId); 
+		//or
+		//$disbursements->setApiUserId($uid);
+		//$disbursements->setApiKey($apiKey);
+		//$disbursements->setApiToken($token);
+		//$result=$disbursements->acountHolder($accountHolderIdType,$accountHolderId);
+
+		//let's print the result
+
+		echo "<pre>";
+		print_r($result);
 
 ## To be fixed ##
 
