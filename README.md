@@ -434,5 +434,5 @@ We are now going to perform a transfer and tranferStatus.
 
 ## To be fixed ##
 
-This library can only create the api user please don't hesitate to inform me when you find a fix/solution. 
+This library can only create the api user and access token, please don't hesitate to inform me when you find a fix/solution. 
 [mailto:ugsalons@gmail.com](mailto:ugsalons@gmail.com "Send Email")
