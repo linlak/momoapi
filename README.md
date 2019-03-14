@@ -333,7 +333,7 @@ We are now going to perform a requestToPay and requestToPayStatus.
 
 	<?php
 		require_once "momo_bootstrap.php";
-		use Momo\MomoApp\Models\RequestToPay;
+
 		$uid="{uid you created in user_id.php}";//for Collection product
 
 		$apiKey="{apikey you created in create_apikey.php}"; //apiKey for Collection product
@@ -401,7 +401,7 @@ We are now going to perform a transfer and tranferStatus.
 
 	<?php
 		require_once "momo_bootstrap.php";
-		use Momo\MomoApp\Models\RequestToPay;
+
 		$uid="{uid you created in user_id.php}";//for each product
 
 		$apiKey="{apikey you created in create_apikey.php}"; //create apiKey for each product
