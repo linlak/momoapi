@@ -1,7 +1,9 @@
 <?php
 namespace Momo\MomoApp\Models;
 /**
-* 
+* [status_code] => 202
+    [status_phrase] => Accepted
+    [data] => 
 */
 class RequestToPayResponse extends MomoResponse
 {
