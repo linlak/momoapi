@@ -18,7 +18,7 @@ abstract class MomoApp implements MomoInterface{
 	private $apiToken='';
 	protected $apiUserId='';
 	protected $headers=[
-		"Content-Length"=>0,
+		// "Content-Length"=>0,
 		Constants::H_AUTH=>"",
 		Constants::H_ENVIRON=>"",
 		// Constants::H_REF_ID=>"",
@@ -117,7 +117,7 @@ abstract class MomoApp implements MomoInterface{
 			if (is_array($body)) {
 				$body=json_encode($body,JSON_UNESCAPED_SLASHES);				
 			}
-			// $this->setHeaders("Content-Length",strlen($body));
+			$this->setHeaders("Content-Length",strlen($body));
 
 			$request=new Request($mtd,$url,$this->headers, $body);
 		}
