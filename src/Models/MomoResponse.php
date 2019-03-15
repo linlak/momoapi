@@ -9,6 +9,7 @@ abstract class MomoResponse
 	protected $data=[];
 	protected $status_code=0;
 	protected $status_phrase="Network error";
+	
 	function __construct(array $response)
 	{
 		$this->response=$response;
@@ -26,7 +27,7 @@ abstract class MomoResponse
 			}
 		}
 	}
-	public getData($key){
+	public function getData($key){
 		if (is_array($key)||!array_key_exists($key, $this->data)) {
 			return "";
 		}

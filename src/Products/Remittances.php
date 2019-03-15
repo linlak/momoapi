@@ -5,6 +5,9 @@ use Momo\MomoApp\Models\RequestToPay;
 use Momo\MomoApp\Commons\MomoLinks;
 use Momo\MomoApp\Commons\Constants;
 
+use Momo\MomoApp\Models\TokenResponse;
+use Momo\MomoApp\Models\BalanceResponse;
+// use Momo\MomoApp\Models\TokenResponse;
 use Momo\MomoApp\Interfaces\TransferInterface;
 /**
 * 
@@ -18,7 +21,8 @@ class Remittances extends MomoApp implements TransferInterface
 	}
 		public function requestToken(){		
 		$this->setAuth();
-		return $this->send($this->genRequest("POST",MomoLinks::R_TOKEN_URI));
+		$response= $this->send($this->genRequest("POST",MomoLinks::R_TOKEN_URI));
+		return new TokenResponse($response);
 	}
 	public function transferStatus($resourceId){
 		$this->setAuth();
@@ -40,7 +44,8 @@ class Remittances extends MomoApp implements TransferInterface
 	}
 	public function requestBalance(){
 		$this->setAuth();
-		return $this->send($this->genRequest("GET",MomoLinks::R_BALANCE_URI));
+		$response= $this->send($this->genRequest("GET",MomoLinks::R_BALANCE_URI));
+		return new BalanceResponse($response);
 		
 	}
 }

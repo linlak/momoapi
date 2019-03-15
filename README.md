@@ -67,20 +67,6 @@ The following code snippet will help to create an **apiUser** this supports all 
 
 		$apiUser=new ApiUser($apiPrimaryKey,$apiSecondaryKey,"sandbox");
 	
-	
-
-
-***user_id.php***
-
-    
-	<?php 
-		require_oce "api_user.php";
-
-		//let's create the UUID you will need to save this id for later use.
-
-		$uid=$apiUser->gen_uuid();
-
-		 echo($uid);
 
 
 ***create_apiuser.php***
@@ -88,46 +74,61 @@ The following code snippet will help to create an **apiUser** this supports all 
 
 	<?php
 		require_once "api_user.php";
-
-		$uid="{the uid you created in user_id.php}";
 		$providerCallbackHost="{your host here}";
 
-		//array
-		$result=$apiUser->createApiUser($uid,$providerCallbackHost);
+		//instanceof ApiUserResponse
+		$result=$apiUser->createApiUser($providerCallbackHost);
 		
 		//let's print the result;
 
-		echo "<pre>";
-			print_r($result);
+		
+		if($result->isCreated()){			
+			$uid=$result->getUid();//save for future reference
+			echo($uid);
+		}
 
 ***api_userinfo.php***
 
 	<?php
 		require_once "api_user.php";
 
-		$uid="{the uid you created in user_id.php}";
+		$uid="{the uid you created in create_apiuser.php}";
 
-		//array
+		//instanceof ApiUserInfoResponse
 		$result=$apiUser->getApiUser($uid);
 		
-		//let's print the result;
+		
+		if($result->isUser()){
 
-		echo "<pre>";
-			print_r($result);
+			$providerCallbackHost=$result->getProviderCallbackHost();
+
+			$targetEnvironment=$result->getTargetEnvironment();
+
+			//let's show the results  result;
+			echo('providerCallbackHost: '.$providerCallbackHost."\n\r");
+
+			echo('targetEnvironment: '.$targetEnvironment."\n\r");
+		}
+		
 
 ***create_apikey.php***
 	
 	<?php
 		require_once "api_user.php";
 
-		$uid="{the uid you created in user_id.php}";
-	
+		$uid="{the uid you created in create_apiuser.php}";
+		
+		//instanceof ApiKeyResponse
 		$result=$apiUser->getApikey($uid);
 
 		//let print the result but u will need to save the apiKey somewhere.
+		
+		if($result->isUser()){
 
-		echo "<pre>";
-			print_r($result);
+			$apiKey=$result->getApiKey(); //save for future reference
+
+			echo($apiKey);
+		}
 
 
 If you are successful up to this stage, you have managed to create the **apiUserId** and **apiUserKey**
@@ -179,19 +180,19 @@ Now we are going to start performing requests. comment out objects for products 
 
 	<?php
 		/*
-			requesting the token token takes alot of time so is set the time to 500 secends to prevent time exception
+			requesting the token takes alot of time so is set the time to 500 secends to prevent time exception
 		*/
 		set_time_limit(500);
 		require_once "momo_bootstrap.php";
 
-		$uid="{uid you created in user_id.php}";//create for each product
+		$uid="{uid you created in create_apiuser.php}";//create for each product
 
 		$apiKey="{apikey you created in create_apikey.php}"; //create apiKey for each product
 
 		$collection->setApiUserId($uid);
 		$collection->setApiKey($apiKey);
 
-		//array
+		//instanceof TokenResponse
 		$result=$collection->requestToken();
 
 		/*to request tokens for other products, use the 
@@ -208,8 +209,11 @@ Now we are going to start performing requests. comment out objects for products 
 
 		//let's print the result but you will need to save the token and expiry time somewhere for reference;
 
-		echo "<pre>";
-		print_r($result);
+		if($result->isCreated()){
+			$access_token=$result->getAccessToken();//save for future reference
+			$token_type=$result->getTokenType();
+			$expires_in=$result->getExpiresIn();
+		}
 		
 		
 Now we have the token for our product's ***apiUser*** let's request balance
@@ -219,7 +223,7 @@ Now we have the token for our product's ***apiUser*** let's request balance
 	<?php
 		require_once "momo_bootstrap.php";
 
-		$uid="{uid you created in user_id.php}";//create for each product
+		$uid="{uid you created in create_apiuser.php}";//create for each product
 
 		$apiKey="{apikey you created in create_apikey.php}"; //create apiKey for each product
 		
@@ -229,7 +233,7 @@ Now we have the token for our product's ***apiUser*** let's request balance
 		$collection->setApiKey($apiKey);
 		$collection->setApiToken($token);
 
-		//array
+		//instanceof BalanceResponse
 		$result=$collection->requestBalance();
 
 		/*to request balance for other products, use the 
@@ -248,8 +252,12 @@ Now we have the token for our product's ***apiUser*** let's request balance
 
 		//let's print the result
 
-		echo "<pre>";
-		print_r($result);
+		if($result->isFound()){
+			$availableBalance=$result->getAvailableBalance();
+			$currency=$result->getCurrency();
+			echo('availableBalance: '.$availableBalance.'\n\r');
+			echo('currency: '.$currency.'\n\r');
+		}
 
 Let's verify account holder
 
@@ -258,7 +266,7 @@ Let's verify account holder
 	<?php
 		require_once "momo_bootstrap.php";
 
-		$uid="{uid you created in user_id.php}";//create for each product
+		$uid="{uid you created in create_apiuser.php}";//create for each product
 
 		$apiKey="{apikey you created in create_apikey.php}"; //create apiKey for each product
 		
@@ -302,7 +310,7 @@ We are now going to perform a requestToPay and requestToPayStatus.
 	<?php
 		require_once "momo_bootstrap.php";
 		use Momo\MomoApp\Models\RequestToPay;
-		$uid="{uid you created in user_id.php}";//for Collection product
+		$uid="{uid you created in create_apiuser.php}";//for Collection product
 
 		$apiKey="{apikey you created in create_apikey.php}"; //apiKey for Collection product
 		
@@ -338,7 +346,7 @@ We are now going to perform a requestToPay and requestToPayStatus.
 	<?php
 		require_once "momo_bootstrap.php";
 
-		$uid="{uid you created in user_id.php}";//for Collection product
+		$uid="{uid you created in create_apiuser.php}";//for Collection product
 
 		$apiKey="{apikey you created in create_apikey.php}"; //apiKey for Collection product
 		
@@ -368,7 +376,7 @@ We are now going to perform a transfer and tranferStatus.
 	<?php
 		require_once "momo_bootstrap.php";
 		use Momo\MomoApp\Models\RequestToPay;
-		$uid="{uid you created in user_id.php}";//for each product
+		$uid="{uid you created in create_apiuser.php}";//for each product
 
 		$apiKey="{apikey you created in create_apikey.php}"; //create apiKey for each product
 		
@@ -407,7 +415,7 @@ We are now going to perform a transfer and tranferStatus.
 	<?php
 		require_once "momo_bootstrap.php";
 
-		$uid="{uid you created in user_id.php}";//for each product
+		$uid="{uid you created in create_apiuser.php}";//for each product
 
 		$apiKey="{apikey you created in create_apikey.php}"; //create apiKey for each product
 		

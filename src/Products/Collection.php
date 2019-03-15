@@ -6,6 +6,10 @@ use Momo\MomoApp\Models\RequestToPay;
 use Momo\MomoApp\Commons\MomoLinks;
 use Momo\MomoApp\Commons\Constants;
 
+use Momo\MomoApp\Models\TokenResponse;
+use Momo\MomoApp\Models\BalanceResponse;
+// use Momo\MomoApp\Models\TokenResponse;
+
 use Momo\MomoApp\Interfaces\CollectionInterface;
 
 class Collection extends MomoApp implements CollectionInterface
@@ -18,8 +22,8 @@ class Collection extends MomoApp implements CollectionInterface
 	}
 	public function requestToken(){		
 		$this->setAuth();
-		$promise=$this->send($this->genRequest("POST",MomoLinks::TOKEN_URI));
-		return $promise;
+		$response = $this->send($this->genRequest("POST",MomoLinks::TOKEN_URI));
+		return new TokenResponse($response);
 	}
 	public function requestToPayStatus($resourceId){
 		$this->setAuth();
@@ -41,6 +45,9 @@ class Collection extends MomoApp implements CollectionInterface
 	}
 	public function requestBalance(){
 		$this->setAuth();
-		return $this->send($this->genRequest("GET",MomoLinks::BALANCE_URI));		
+		$response = $this->send($this->genRequest("GET",MomoLinks::BALANCE_URI));	
+
+		return new BalanceResponse($response);
+		
 	}
 }
