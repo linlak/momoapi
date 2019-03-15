@@ -236,7 +236,8 @@ Now we have the token for our product's ***apiUser*** let's request balance
 		//instanceof BalanceResponse
 		$result=$collection->requestBalance();
 
-		/*to request balance for other products, use the 
+		/**
+		*to request balance for other products, use the 
 		* pruduct's object defined in momo_bootstrap.php
 		* e.g
 		*/
@@ -449,7 +450,7 @@ With the above command you will have all your dependencies updated.
 
 Setting **Webhooks** these will help you to write code for the callbackUrl. For info contact me at the email provided bellow.
 
-**Nice code**
+**Nice coding**
 
 Regards
 
