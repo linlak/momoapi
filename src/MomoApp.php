@@ -99,7 +99,7 @@ abstract class MomoApp implements MomoInterface{
 	}
 	public function setAuth(){
 		if (""!==$this->apiToken) {
-			$this->setHeaders(Constants::H_AUTH,$this->apiToken);
+			$this->setHeaders(Constants::H_AUTH,'Bearer '.$this->apiToken);
 			return;
 		}else{
 		
@@ -117,7 +117,7 @@ abstract class MomoApp implements MomoInterface{
 			if (is_array($body)) {
 				$body=json_encode($body,JSON_UNESCAPED_SLASHES);				
 			}
-			$this->setHeaders("Content-Length",strlen($body));
+			// $this->setHeaders("Content-Length",strlen($body));
 
 			$request=new Request($mtd,$url,$this->headers, $body);
 		}
