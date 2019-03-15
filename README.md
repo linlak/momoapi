@@ -431,8 +431,26 @@ We are now going to perform a transfer and tranferStatus.
 		print_r($result);
 
 
+If you are successful up to this step, Congratulations you have managed to integrate the momoapi into your system. Though there is still more yet to come keep checking in for updates and I strongly recommend you to use **Composer** for your php dependency management,it will help you to easily update libraries in a single command.
+	
+	composer update
+With the above command you will have all your dependencies updated. 
 
-## To be fixed ##
 
-This library can only create the api user and access token, please don't hesitate to inform me when you find a fix/solution. 
+## Up Next ##
+
+Setting **Webhooks** these will help you to write code for the callbackUrl. For info contact me at the email provided bellow.
+
+**Nice code**
+
+Regards
+
+Linus Nowomukama
+
 [mailto:ugsalons@gmail.com](mailto:ugsalons@gmail.com "Send Email")
+
+[tel:+256783198167](tel:+256783198167 "Call me")
+
+
+
+
