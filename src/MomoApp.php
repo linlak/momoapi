@@ -8,6 +8,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
+use \PDO;
 abstract class MomoApp implements MomoInterface{
 
 	protected $environ="sandbox";//live
@@ -17,6 +18,7 @@ abstract class MomoApp implements MomoInterface{
 	protected $apiKey='';
 	private $apiToken='';
 	protected $apiUserId='';
+	protected $db=null;
 	protected $headers=[
 		// "Content-Length"=>0,
 		Constants::H_AUTH=>"",
@@ -45,6 +47,25 @@ abstract class MomoApp implements MomoInterface{
 			
 		]);
 	} 
+	public function setDatabase($host,$dbName,$dbUser,$dbPass){
+		
+					// Set DSN
+			        $dsn = sprintf('mysql:host=%s;dbname=%s', $host, $dbname);
+			        // Set options
+			        $options = array(
+			            PDO::ATTR_PERSISTENT    => true,
+			            PDO::ATTR_ERRMODE       => PDO::ERRMODE_EXCEPTION
+			        );
+			        // Create a new PDO instanace
+			        try{
+			            $this->db = new PDO($dsn, $user, $pass, $options);
+			        }
+			        // Catch any errors
+			        catch(\PDOException $e){
+			            die( $e->getMessage());
+			        }
+		
+	}
 	public function gen_uuid() {
 	    return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
 	        // 32 bits for "time_low"

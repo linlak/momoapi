@@ -450,6 +450,12 @@ With the above command you will have all your dependencies updated.
 
 Setting **Webhooks** these will help you to write code for the callbackUrl. For info contact me at the email provided bellow.
 
+**Token storage classes** after realizing that there is need to refresh a token before it expires we are planning to come up with a storage class to store access tokens as soon as they are created, then we shall register a cronjob to check the token expiry at a set interval so that we can always have a valid to token. 
+
+This will utilize mysql database to store data in known tables where data can be queried.
+
+Check in for updates.
+
 **Nice coding**
 
 Regards
