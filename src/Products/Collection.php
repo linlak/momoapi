@@ -29,7 +29,8 @@ class Collection extends MomoApp implements CollectionInterface
 		$this->setAuth();
 		return $this->send($this->genRequest("GET",MomoLinks::REQUEST_TO_PAT_URI.'/'.$resourceId));
 	}
-	public function acountHolder($accountHolderIdType,$accountHolderId){		
+	public function acountHolder($accountHolderIdType,$accountHolderId){
+		$this->setAuth();		
 		return $this->send($this->genRequest("GET",MomoLinks::ACOUNT_HOLDER_URI.$accountHolderIdType.'/'.$accountHolderId.'/active'));
 	}
 	public function requestToPay(RequestToPay $requestBody,$ref,$callbackUri=false){
