@@ -42,6 +42,9 @@ class Bootstraper extends Database
 		
 	private $environ="sandbox";
 	private $dbName="";
+	private $cCallback="";
+	private $dCallback="";
+	private $rCallback="";
 	private $tables=[
 		'momo_api_user',
 		'momo_payment_queue',
@@ -57,25 +60,101 @@ class Bootstraper extends Database
 		$this->dbName=$dbName;
 		$this->createTables();
 	}
-	public function initCollection($api_primary,$api_secondary)
+	public function initCollection($api_primary,$api_secondary,$callBackUrl)
 	{
+		$this->cCallback=$callBackUrl;
+		$momo=new Collection($api_primary,$api_secondary,$this->environ);
+		if ($apiUser=$this->checkUser($api_primary,$api_secondary)) {
+			if ($apiUser==="no_tables") {
+				return $momo;
+			}
+			// print_r($apiUser);
+			return $apiUser;
+		}else{
+			if ($momonew=$this->insertNewApiUser($momo, $api_primary,$api_secondary,"Collection")) {
+				return $momonew;
+			}
+		}
+		return $momo;
+	}
+	public function initRemittances($api_primary,$api_secondary,$callBackUrl)
+	{
+		$this->rCallback=$callBackUrl;
+		$momo=new Remittances($api_primary,$api_secondary,$this->environ);
+		if ($apiUser=$this->checkUser($api_primary,$api_secondary)) {
+			if ($apiUser==="no_tables") {
+				return $momo;
+			}
+			// print_r($apiUser);
+			return $apiUser;
+		}else{
+			if ($momonew=$this->insertNewApiUser($momo, $api_primary,$api_secondary,"Remittances")) {
+				return $momonew;
+			}
+		}
+		return $momo;
+	}
+	public function initDisbursements($api_primary,$api_secondary,$callBackUrl)
+	{
+		$this->dCallback=$callBackUrl;
+		$momo=new Disbursements($api_primary,$api_secondary,$this->environ);
 		
+		if ($apiUser=$this->checkUser($api_primary,$api_secondary)) {
+			if ($apiUser==="no_tables") {
+				return $momo;
+			}
+
+		}else{
+			if ($momonew=$this->insertNewApiUser($momo, $api_primary,$api_secondary,"Disbursements")) {
+				return $momonew;
+			}
+		}
+		return $momo;
 	}
-	public function initRemittances($api_primary,$api_secondary)
-	{
-		# code...
-	}
-	public function initDisbursements($api_primary,$api_secondary)
-	{
-		# code...
+	private function insertNewApiUser(MomoApp $momo,$api_primary,$api_secondary,$product){	
+		$cBackUrl="";	
+		switch ($product) {
+			case 'Collection':
+				$cBackUrl=$this->cCallback;
+				break;
+			case 'Disbursements':
+				$cBackUrl=$this->dCallback;
+				break;
+			case 'Remittances':
+				$cBackUrl=$this->rCallback;
+				break;
+		}
+		if ($res=$momo->createApiUser($cBackUrl)) {
+			if ($res->isCreated()) {
+				$sql="INSERT INTO momo_api_user (uuid,api_primary,api_secondary,product,callback_url) VALUES (:uuid,:api_primary,:api_secondary,:product,:callback_url) ON DUPLICATE KEY UPDATE uuid=:uuid, api_primary=:api_primary,api_secondary=:api_secondary,product=:product,api_key=null";
+				$this->query($sql);
+				$this->bind(':uuid',$res->getUid());
+				$this->bind(':api_primary',$api_primary);
+				$this->bind(':api_secondary',$api_secondary);
+				$this->bind(':product',$product);
+				$this->bind(':callback_url',$cBackUrl);
+				if($this->execute()){
+				if($apiUser=$this->checkUser($api_primary,$api_secondary))
+					{
+						print_r($apiUser);
+						$momo->setApiUserId($apiUser['uuid']);
+					}
+				}
+			}
+		}
+		// $momo->setApiUserId($uuid);
+		return $momo;
 	}
 	private function checkUser($api_primary,$api_secondary){
-		if (in_array('momo_api_user', $this->found_tables)) {
-			$sql="SELECT a.* FROM `momo_api_user` a WHERE a.api_primary=:api_primary AND a.api_secondary=:api_secondary";
+		if (in_array('momo_api_user', $this->found_tables)) {			
+			$sql="SELECT a.* FROM momo_api_user a WHERE a.api_primary=:api_primary AND a.api_secondary=:api_secondary";
 			$this->query($sql);
 			$this->bind(':api_primary',$api_primary);
 			$this->bind('api_secondary',$api_secondary);
+			// $this->debugDumpParams();
 			return $this->single();
+		}else{
+			return 'no_tables';
 		}
 		
 	}
@@ -102,7 +181,8 @@ class Bootstraper extends Database
 					  `product` varchar(255) NOT NULL,
 					  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
 					  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-					  `api_key` varchar(255)  NULL
+					  `api_key` varchar(255)  NULL,
+					  `callback_url` varchar(255) NULL
 					) ENGINE=InnoDB DEFAULT CHARSET=armscii8;
 
 					CREATE TABLE  `momo_access_tokens` (

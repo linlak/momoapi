@@ -43,7 +43,6 @@ use GuzzleHttp\Exception\RequestException;
 use Momo\MomoApp\Models\ApiUserResponse;
 use Momo\MomoApp\Models\ApiKeyResponse;
 use Momo\MomoApp\Models\apiUserInfoResponse;
-use \PDO;
 abstract class MomoApp implements MomoInterface{
 
 	protected $environ="sandbox";//live
@@ -82,7 +81,7 @@ abstract class MomoApp implements MomoInterface{
 			
 		]);
 	} 
-	public function setDatabase(PDO $db){
+	public function setDatabase(BootStraper $db){
 		$this->db=$db;		
 		
 	}
