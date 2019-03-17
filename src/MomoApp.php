@@ -8,6 +8,9 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
+use Momo\MomoApp\Models\ApiUserResponse;
+use Momo\MomoApp\Models\ApiKeyResponse;
+use Momo\MomoApp\Models\apiUserInfoResponse;
 use \PDO;
 abstract class MomoApp implements MomoInterface{
 
@@ -47,23 +50,8 @@ abstract class MomoApp implements MomoInterface{
 			
 		]);
 	} 
-	public function setDatabase($host,$dbName,$dbUser,$dbPass){
-		
-					// Set DSN
-			        $dsn = sprintf('mysql:host=%s;dbname=%s', $host, $dbname);
-			        // Set options
-			        $options = array(
-			            PDO::ATTR_PERSISTENT    => true,
-			            PDO::ATTR_ERRMODE       => PDO::ERRMODE_EXCEPTION
-			        );
-			        // Create a new PDO instanace
-			        try{
-			            $this->db = new PDO($dsn, $user, $pass, $options);
-			        }
-			        // Catch any errors
-			        catch(\PDOException $e){
-			            die( $e->getMessage());
-			        }
+	public function setDatabase(PDO $db){
+		$this->db=$db;		
 		
 	}
 	public function gen_uuid() {
@@ -172,7 +160,28 @@ abstract class MomoApp implements MomoInterface{
 		}
 		unset($this->headers[$key]);
 	}
-	
+	public function createApiUser($providerCallbackHost){
+		$uid=$this->gen_uuid();
+		$this->setHeaders(Constants::H_REF_ID,$uid);
+		$this->removeHeader(Constants::H_AUTH);
+		$this->removeHeader(Constants::H_ENVIRON);
+		$body=['providerCallbackHost'=>$providerCallbackHost];
+		$result=$this->send($this->genRequest("POST",MomoLinks::USER_URI,$body));
+		return new ApiUserResponse($result,$uid);
+	}
+	public function getApiUser($uid){
+		$this->removeHeader(Constants::H_AUTH);
+		$this->removeHeader(Constants::H_ENVIRON);
+		$result=$this->send($this->genRequest("GET",MomoLinks::USER_URI.'/'.$uid));
+		return new ApiUserInfoResponse($result,$uid);
+	}
+	public function getApikey($uid){
+		$this->removeHeader(Constants::H_AUTH);
+		$this->removeHeader(Constants::H_ENVIRON);
+		$result=$this->send($this->genRequest("POST",MomoLinks::USER_URI.'/'.$uid.'/apikey'));
+		return new ApiKeyResponse($result,$uid);
+	}
+	public function apiUserHook(){}
 	
 
 }
