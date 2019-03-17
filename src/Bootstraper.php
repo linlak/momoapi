@@ -147,11 +147,10 @@ class Bootstraper extends Database
 	}
 	private function checkUser($api_primary,$api_secondary){
 		if (in_array('momo_api_user', $this->found_tables)) {			
-			$sql="SELECT a.* FROM momo_api_user a WHERE a.api_primary=:api_primary AND a.api_secondary=:api_secondary";
+			$sql="SELECT a.uuid,a.api_primary,a.api_secondary,a.product,a.created_at,a.updated_at,a.api_key,a.callback_url FROM momo_api_user a WHERE a.api_primary=:api_primary AND a.api_secondary=:api_secondary";
 			$this->query($sql);
 			$this->bind(':api_primary',$api_primary);
 			$this->bind('api_secondary',$api_secondary);
-			// $this->debugDumpParams();
 			return $this->single();
 		}else{
 			return 'no_tables';
@@ -160,13 +159,13 @@ class Bootstraper extends Database
 	}
 	private function loadExists(){
 		$sql1="SELECT TABLE_NAME as table_name FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA=:table_schema";
-  	$this->query($sql1);
-	$this->bind(':table_schema',$this->dbName);
-	if ($fd=$this->resultSet()) {
-		for ($i=0;$i<count($fd);$i++) {
-			array_push($this->found_tables, $fd[$i]['table_name']);
+	  	$this->query($sql1);
+		$this->bind(':table_schema',$this->dbName);
+		if ($fd=$this->resultSet()) {
+			for ($i=0;$i<count($fd);$i++) {
+				array_push($this->found_tables, $fd[$i]['table_name']);
+			}
 		}
-	}
 	}
 	private function createTables(){
   		$this->loadExists();
@@ -259,5 +258,10 @@ class Bootstraper extends Database
 			}
 			return $sql;
 	}
-
+	private function saveApiKey($api_primary,$api_secondary,$api_key){
+		if($apiUser = $this->checkUser($api_primary,$api_secondary)){
+			$user=['api_key'=>$api_key];
+			return $this->genUpdate('momo_api_user',$user,['uuid'=>$apiUser['uuid']],1);
+		}
+	}
 }
