@@ -88,8 +88,17 @@ class Bootstraper extends Database
 			// print_r($apiUser);
 			return $apiUser;
 		}else{
-			if ($momonew=$this->insertNewApiUser($momo, $api_primary,$api_secondary,"Remittances")) {
-				return $momonew;
+			if ($apiUser=$this->insertNewApiUser($momo, $api_primary,$api_secondary,"Remittances")) {
+				$momo->setApiUserId($apiUser['uuid']);
+				
+				$momo->setApiUserId($apiUser['uuid']);
+				if ((string)$apiUser['api_key']==="") {
+					
+				}else{
+
+					$momo->setApiKey($apiUser['api_key']);
+					
+				}
 			}
 		}
 		return $momo;
@@ -136,14 +145,12 @@ class Bootstraper extends Database
 				if($this->execute()){
 				if($apiUser=$this->checkUser($api_primary,$api_secondary))
 					{
-						print_r($apiUser);
-						$momo->setApiUserId($apiUser['uuid']);
+						return $apiUser;
 					}
 				}
 			}
 		}
-		// $momo->setApiUserId($uuid);
-		return $momo;
+		return false;
 	}
 	private function checkUser($api_primary,$api_secondary){
 		if (in_array('momo_api_user', $this->found_tables)) {			
