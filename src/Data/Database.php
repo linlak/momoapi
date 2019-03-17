@@ -28,7 +28,7 @@ abstract class Database{
     $this->stmt = $this->dbh->prepare($query);
 	}
 	public function newtable($sql){
-    $this->stmt = $this->dbh->exec($sql);
+        $this->stmt = $this->dbh->exec($sql);
 	}
 	public function bind($param, $value, $type = null){
     if (is_null($type)) {
@@ -49,7 +49,7 @@ abstract class Database{
     $this->stmt->bindValue($param, $value, $type);
 	}
 	public function execute(){
-    return $this->stmt->execute();
+        return $this->stmt->execute();
 	}
 	public function resultset(){
     $this->execute();
