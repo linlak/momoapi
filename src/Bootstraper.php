@@ -114,8 +114,6 @@ class Bootstraper extends Database
 				$this->loadExists();
 				
 		}
-echo "<pre>";			
-				print_r($this->found_tables);
 	}
 
 	private function paymentsTable($tbName,$fkPrefix){
