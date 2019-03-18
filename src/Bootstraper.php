@@ -359,7 +359,15 @@ class Bootstraper extends Database
 	public function saveApiToken(TokenResponse $response,$api_primary,$api_secondary){
 		if ($response->isCreated()) {
 			if ($apiUser=$this->checkUser($api_primary,$api_secondary)) {
-				$sql="INSERT INTO momo_access_tokens (uuid,access_token,token_type,expires_in,expires_at) VALUES (:uuid,:access_token,:token_type,:expires_in,DATE_ADD(NOW(),:expires_in,second))";
+				$sql="INSERT INTO momo_access_tokens (uuid,access_token,token_type,expires_in,expires_at) VALUES (:uuid,:access_token,:token_type,:expires_in,DATE_ADD(NOW(),INTERVAL :expires_in SECOND)) ON DUPLICATE KEY UPDATE access_token=:access_token,token_type=:token_type,expires_in=:expires_in,started_at=NOW(),expires_at=DATE_ADD(NOW(),INTERVAL :expires_in SECOND)";
+				$this->query($sql);
+				$this->bind(':access_token',$response->getAccessToken());
+				$this->bind(':token_type',$response->getTokenType());
+				$this->bind(':expires_in',$response->getExpiresIn());
+				$this->bind(':uuid',$apiUser['uuid']);
+				if ($this->execute()) {
+					return true;
+				}
 			}
 		}
 		return false;
