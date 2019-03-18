@@ -233,7 +233,7 @@ class Bootstraper extends Database
 		return $momo;
 	}
 
-	private function insertNewApiUser(MomoApp $momo,$api_primary,$api_secondary,$product,,$liveCong=array()){	
+	private function insertNewApiUser(MomoApp $momo,$api_primary,$api_secondary,$product,$liveCong=array()){	
 		$cBackUrl="";	
 		switch ($product) {
 			case 'Collection':

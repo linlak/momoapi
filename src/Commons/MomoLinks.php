@@ -44,6 +44,7 @@ class MomoLinks
 
 	//collection
 	const REQUEST_TO_PAT_URI='https://ericssonbasicapi2.azure-api.net/collection/v1_0/requesttopay';
+	const PRE_APPROVAL_URI='https://ericssonbasicapi2.azure-api.net/collection/v1_0/preapproval';
 	const TOKEN_URI='https://ericssonbasicapi2.azure-api.net/collection/token/';
 	const BALANCE_URI='https://ericssonbasicapi2.azure-api.net/collection/v1_0/account/balance';
 	const ACOUNT_HOLDER_URI='https://ericssonbasicapi2.azure-api.net/collection/v1_0/accountholder/';
