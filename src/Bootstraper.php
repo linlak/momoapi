@@ -55,12 +55,15 @@ class Bootstraper extends Database
 	private $found_tables=[];
 	function __construct($host,$dbName,$dbUser,$dbPass,$environ='sandbox')
 	{
+		if ($environ!=="sandbox"&&$environ!=="live") {
+			die("Un supported environment");
+		}
 		parent::__construct($host,$dbName,$dbUser,$dbPass);
 		$this->environ=$environ;
 		$this->dbName=$dbName;
 		$this->createTables();
 	}
-	public function initCollection($api_primary,$api_secondary,$callBackUrl)
+	public function initCollection($api_primary,$api_secondary,$callBackUrl,$liveCong=array())
 	{
 		$this->cCallback=$callBackUrl;
 		$momo=new Collection($api_primary,$api_secondary,$this->environ);
@@ -117,7 +120,7 @@ class Bootstraper extends Database
 		return null;
 	}
 
-	public function initRemittances($api_primary,$api_secondary,$callBackUrl)
+	public function initRemittances($api_primary,$api_secondary,$callBackUrl,$liveCong=array())
 	{
 		$this->rCallback=$callBackUrl;
 		$momo=new Remittances($api_primary,$api_secondary,$this->environ);
@@ -176,7 +179,7 @@ class Bootstraper extends Database
 		// need to throw exception
 		return null;
 	}
-	public function initDisbursements($api_primary,$api_secondary,$callBackUrl)
+	public function initDisbursements($api_primary,$api_secondary,$callBackUrl,$liveCong=array())
 	{
 		$this->dCallback=$callBackUrl;
 		$momo=new Disbursements($api_primary,$api_secondary,$this->environ);
@@ -230,7 +233,7 @@ class Bootstraper extends Database
 		return $momo;
 	}
 
-	private function insertNewApiUser(MomoApp $momo,$api_primary,$api_secondary,$product){	
+	private function insertNewApiUser(MomoApp $momo,$api_primary,$api_secondary,$product,,$liveCong=array()){	
 		$cBackUrl="";	
 		switch ($product) {
 			case 'Collection':
@@ -243,23 +246,29 @@ class Bootstraper extends Database
 				$cBackUrl=$this->rCallback;
 				break;
 		}
-		if ($res=$momo->createApiUser($cBackUrl)) {
-			if ($res->isCreated()) {
-				$sql="INSERT INTO momo_api_user (uuid,api_primary,api_secondary,product,callback_url) VALUES (:uuid,:api_primary,:api_secondary,:product,:callback_url) ON DUPLICATE KEY UPDATE uuid=:uuid, api_primary=:api_primary,api_secondary=:api_secondary,product=:product,api_key=null";
-				$this->query($sql);
-				$this->bind(':uuid',$res->getUid());
-				$this->bind(':api_primary',$api_primary);
-				$this->bind(':api_secondary',$api_secondary);
-				$this->bind(':product',$product);
-				$this->bind(':callback_url',$cBackUrl);
-				if($this->execute()){
-				if($apiUser=$this->checkUser($api_primary,$api_secondary))
-					{
-						return $apiUser;
+			$sql="INSERT INTO momo_api_user (uuid,api_primary,api_secondary,product,callback_url,api_key) VALUES (:uuid,:api_primary,:api_secondary,:product,:callback_url,:api_key) ON DUPLICATE KEY UPDATE uuid=:uuid, api_primary=:api_primary,api_secondary=:api_secondary,product=:product,api_key=:api_key";
+
+		if ($this->environ==="sandbox") {
+			if ($res=$momo->createApiUser($cBackUrl)) {
+			if ($res->isCreated()) {					
+					$this->query($sql);
+					$this->bind(':uuid',$res->getUid());
+					$this->bind(':api_primary',$api_primary);
+					$this->bind(':api_secondary',$api_secondary);
+					$this->bind(':product',$product);
+					$this->bind(':callback_url',$cBackUrl);
+					$this->bind(':api_key',NULL);
+					if($this->execute()){
+					if($apiUser=$this->checkUser($api_primary,$api_secondary))
+						{
+							return $apiUser;
+						}
 					}
 				}
 			}
-		}
+		}else{
+			//add live credentials
+		}		
 		return false;
 	}
 	private function checkUser($api_primary,$api_secondary){

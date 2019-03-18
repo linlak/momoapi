@@ -14,7 +14,7 @@ You must also have an account on the Momo Developer Portal [https://momodevelope
 
 The following software is require for better results:-
 
-- Testing server with php support e.g xampp,lampp,wampp etc.
+- Testing server with **PHP** and **MYSQL** support e.g xampp,lampp,wampp etc.
 - Composer a dependency manager for php. [https://getcomposer.org/](https://getcomposer.org/ "Go to docs")
 - Text editor
 	- Sublime text
@@ -25,6 +25,8 @@ The following software is require for better results:-
 **Features**
 
 - This library depends on guzzlehttp to perform http requests.
+- ApiUsers, accessTokens, apiKeys are stored in the database and all of this is done the first time a product is initailized.
+- AccessTokens are refreshed once they approach expiration. We have all of this for you. 
 
 
 ## Installation ##
