@@ -54,6 +54,7 @@ class Collection extends MomoApp implements CollectionInterface
 
 	public function requestToken()
 	{		
+		$this->setApiToken("");
 		$this->setAuth();
 		$response = $this->send($this->genRequest("POST",MomoLinks::TOKEN_URI));
 		return new TokenResponse($response);

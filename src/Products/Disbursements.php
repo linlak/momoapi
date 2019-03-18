@@ -52,6 +52,7 @@ class Disbursements extends MomoApp implements TransferInterface
 		parent::__construct($apiKey,$apiSecret,$environ);
 	}
 	public function requestToken(){
+		$this->setApiToken("");
 		$this->setAuth();
 		$response = $this->send($this->genRequest("GET",MomoLinks::D_TOKEN_URI));
 		return new TokenResponse($response);

@@ -51,7 +51,8 @@ class Remittances extends MomoApp implements TransferInterface
 	{
 		parent::__construct($apiKey,$apiSecret,$environ);
 	}
-		public function requestToken(){		
+	public function requestToken(){		
+		$this->setApiToken("");
 		$this->setAuth();
 		$response= $this->send($this->genRequest("POST",MomoLinks::R_TOKEN_URI));
 		return new TokenResponse($response);

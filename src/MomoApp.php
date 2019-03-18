@@ -200,17 +200,17 @@ abstract class MomoApp implements MomoInterface{
 		$result=$this->send($this->genRequest("POST",MomoLinks::USER_URI,$body));
 		return new ApiUserResponse($result,$uid);
 	}
-	public function getApiUser($uid){
+	public function getApiUser(){
 		$this->removeHeader(Constants::H_AUTH);
 		$this->removeHeader(Constants::H_ENVIRON);
-		$result=$this->send($this->genRequest("GET",MomoLinks::USER_URI.'/'.$uid));
-		return new ApiUserInfoResponse($result,$uid);
+		$result=$this->send($this->genRequest("GET",MomoLinks::USER_URI.'/'.$this->apiUserId));
+		return new ApiUserInfoResponse($result,$this->apiUserId);
 	}
-	public function getApikey($uid){
+	public function getApikey(){
 		$this->removeHeader(Constants::H_AUTH);
 		$this->removeHeader(Constants::H_ENVIRON);
-		$result=$this->send($this->genRequest("POST",MomoLinks::USER_URI.'/'.$uid.'/apikey'));
-		return new ApiKeyResponse($result,$uid);
+		$result=$this->send($this->genRequest("POST",MomoLinks::USER_URI.'/'.$this->apiUserId.'/apikey'));
+		return new ApiKeyResponse($result,$this->apiUserId);
 	}
 	public function apiUserHook(){}
 	

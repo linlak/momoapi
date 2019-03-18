@@ -35,7 +35,6 @@ namespace Momo\MomoApp;
 use Momo\MomoApp\Products\Collection;
 use Momo\MomoApp\Products\Remittances;
 use Momo\MomoApp\Products\Disbursements;
-use Momo\MomoApp\Products\ApiUser;
 use Momo\MomoApp\Data\Database;
 class Bootstraper extends Database
 {
@@ -64,29 +63,71 @@ class Bootstraper extends Database
 	{
 		$this->cCallback=$callBackUrl;
 		$momo=new Collection($api_primary,$api_secondary,$this->environ);
+		$momo->setDatabase($this);
 		if ($apiUser=$this->checkUser($api_primary,$api_secondary)) {
 			if ($apiUser==="no_tables") {
+				return null;
+			}
+				$momo->setApiUserId($apiUser['uuid']);
+				
+				$momo->setApiUserId($apiUser['uuid']);
+				if ((string)$apiUser['api_key']==="") {
+					if ($apiUser=$this->getApiKey($momo,$api_primary,$api_secondary)) {
+						$momo->setApiKey($apiUser['api_key']);
+					}
+
+				}else{
+
+					$momo->setApiKey($apiUser['api_key']);
+					
+				}
+				return $momo;
+		}else{
+			if ($apiUser=$this->insertNewApiUser($momo, $api_primary,$api_secondary,"Collection")) {
+				$momo->setApiUserId($apiUser['uuid']);
+				
+				$momo->setApiUserId($apiUser['uuid']);
+				if ((string)$apiUser['api_key']==="") {
+					if ($apiUser=$this->getApiKey($momo,$api_primary,$api_secondary)) {
+						$momo->setApiKey($apiUser['api_key']);
+					}
+
+				}else{
+
+					$momo->setApiKey($apiUser['api_key']);
+					
+				}
 				return $momo;
 			}
-			// print_r($apiUser);
-			return $apiUser;
-		}else{
-			if ($momonew=$this->insertNewApiUser($momo, $api_primary,$api_secondary,"Collection")) {
-				return $momonew;
-			}
 		}
-		return $momo;
+		return null;
 	}
+
 	public function initRemittances($api_primary,$api_secondary,$callBackUrl)
 	{
 		$this->rCallback=$callBackUrl;
 		$momo=new Remittances($api_primary,$api_secondary,$this->environ);
+		$momo->setDatabase($this);
 		if ($apiUser=$this->checkUser($api_primary,$api_secondary)) {
 			if ($apiUser==="no_tables") {
-				return $momo;
+				//throw expcetion
+				return null;
 			}
-			// print_r($apiUser);
-			return $apiUser;
+			
+				$momo->setApiUserId($apiUser['uuid']);
+				
+				$momo->setApiUserId($apiUser['uuid']);
+				if ((string)$apiUser['api_key']==="") {
+					if ($apiUser=$this->getApiKey($momo,$api_primary,$api_secondary)) {
+						$momo->setApiKey($apiUser['api_key']);
+					}
+
+				}else{
+
+					$momo->setApiKey($apiUser['api_key']);
+					
+				}
+				return $momo;
 		}else{
 			if ($apiUser=$this->insertNewApiUser($momo, $api_primary,$api_secondary,"Remittances")) {
 				$momo->setApiUserId($apiUser['uuid']);
@@ -94,32 +135,65 @@ class Bootstraper extends Database
 				$momo->setApiUserId($apiUser['uuid']);
 				if ((string)$apiUser['api_key']==="") {
 					
+					if ($apiUser=$this->getApiKey($momo,$api_primary,$api_secondary)) {
+						$momo->setApiKey($apiUser['api_key']);
+					}
 				}else{
 
 					$momo->setApiKey($apiUser['api_key']);
 					
 				}
+				return $momo;
 			}
 		}
-		return $momo;
+		// need to throw exception
+		return null;
 	}
 	public function initDisbursements($api_primary,$api_secondary,$callBackUrl)
 	{
 		$this->dCallback=$callBackUrl;
 		$momo=new Disbursements($api_primary,$api_secondary,$this->environ);
-		
+		$momo->setDatabase($this);
 		if ($apiUser=$this->checkUser($api_primary,$api_secondary)) {
 			if ($apiUser==="no_tables") {
 				return $momo;
 			}
+				$momo->setApiUserId($apiUser['uuid']);
+				
+				$momo->setApiUserId($apiUser['uuid']);
+				if ((string)$apiUser['api_key']==="") {
+					if ($apiUser=$this->getApiKey($momo,$api_primary,$api_secondary)) {
+						$momo->setApiKey($apiUser['api_key']);
+					}
+
+				}else{
+
+					$momo->setApiKey($apiUser['api_key']);
+					
+				}
+				return $momo;
 
 		}else{
-			if ($momonew=$this->insertNewApiUser($momo, $api_primary,$api_secondary,"Disbursements")) {
-				return $momonew;
+			if ($apiUser=$this->insertNewApiUser($momo, $api_primary,$api_secondary,"Disbursements")) {
+				$momo->setApiUserId($apiUser['uuid']);
+				
+				$momo->setApiUserId($apiUser['uuid']);
+				if ((string)$apiUser['api_key']==="") {
+					
+					if ($apiUser=$this->getApiKey($momo,$api_primary,$api_secondary)) {
+						$momo->setApiKey($apiUser['api_key']);
+					}
+				}else{
+
+					$momo->setApiKey($apiUser['api_key']);
+					
+				}
+				return $momo;
 			}
 		}
 		return $momo;
 	}
+
 	private function insertNewApiUser(MomoApp $momo,$api_primary,$api_secondary,$product){	
 		$cBackUrl="";	
 		switch ($product) {
@@ -264,6 +338,16 @@ class Bootstraper extends Database
 					";	
 			}
 			return $sql;
+	}
+	private function getApiKey(MomoApp $momo,$api_primary,$api_secondary){
+		if ($res=$momo->getApikey()) {
+			if ($res->isUser()) {
+				if($this->saveApiKey($api_primary,$api_secondary,$res->getApiKey())){
+					return $this->checkUser($api_primary,$api_secondary);
+				}
+			}
+		}
+		return false;
 	}
 	private function saveApiKey($api_primary,$api_secondary,$api_key){
 		if($apiUser = $this->checkUser($api_primary,$api_secondary)){
