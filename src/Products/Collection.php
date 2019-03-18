@@ -62,14 +62,11 @@ class Collection extends MomoApp implements CollectionInterface
 		}
 		return false;
 	}
-	public function requestToPayStatus($resourceId){
-		$this->setAuth();
-		return $this->send($this->genRequest("GET",MomoLinks::REQUEST_TO_PAT_URI.'/'.$resourceId));
-	}
 	public function acountHolder($accountHolderIdType,$accountHolderId){
 		$this->setAuth();		
 		return $this->send($this->genRequest("GET",MomoLinks::ACOUNT_HOLDER_URI.$accountHolderIdType.'/'.$accountHolderId.'/active'));
 	}
+
 	public function requestToPay(RequestToPay $requestBody,$ref,$callbackUri=false){
 		$this->setHeaders(Constants::H_REF_ID,$ref);
 		$this->setAuth();
@@ -80,6 +77,25 @@ class Collection extends MomoApp implements CollectionInterface
 			$requestBody->setCurrency('EUR');
 		}
 		return $this->send($this->genRequest("POST",MomoLinks::REQUEST_TO_PAT_URI,$requestBody->generateRequestBody()));
+	}
+	public function requestToPayStatus($resourceId){
+		$this->setAuth();
+		return $this->send($this->genRequest("GET",MomoLinks::REQUEST_TO_PAT_URI.'/'.$resourceId));
+	}
+	public function requestPreAproval(RequestToPay $requestBody,$ref,$callbackUri=false){
+		$this->setHeaders(Constants::H_REF_ID,$ref);
+		$this->setAuth();
+		if (false!==$callbackUri) {
+			$this->setHeaders(Constants::H_CALL_BACK,$callbackUri);
+		}
+		if ($this->environ==='sandbox') {
+			$requestBody->setCurrency('EUR');
+		}
+		return $this->send($this->genRequest("POST",MomoLinks::PRE_APPROVAL_URI,$requestBody->generateRequestBody()));
+	}
+	public function requestPreAprovalStatus($resourceId){
+		$this->setAuth();
+		return $this->send($this->genRequest("GET",MomoLinks::PRE_APPROVAL_URI.'/'.$resourceId));
 	}
 	public function requestBalance(){
 		$this->setAuth();
