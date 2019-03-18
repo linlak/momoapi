@@ -355,4 +355,13 @@ class Bootstraper extends Database
 			return $this->genUpdate('momo_api_user',$user,['uuid'=>$apiUser['uuid']],1);
 		}
 	}
+
+	public function saveApiToken(TokenResponse $response,$api_primary,$api_secondary){
+		if ($response->isCreated()) {
+			if ($apiUser=$this->checkUser($api_primary,$api_secondary)) {
+				$sql="INSERT INTO momo_access_tokens (uuid,access_token,token_type,expires_in,expires_at) VALUES (:uuid,:access_token,:token_type,:expires_in,DATE_ADD(NOW(),:expires_in,second))";
+			}
+		}
+		return false;
+	}
 }
