@@ -36,6 +36,7 @@ use Momo\MomoApp\Products\Collection;
 use Momo\MomoApp\Products\Remittances;
 use Momo\MomoApp\Products\Disbursements;
 use Momo\MomoApp\Data\Database;
+use Momo\MomoApp\Models\TokenResponse;
 class Bootstraper extends Database
 {
 		
@@ -81,7 +82,8 @@ class Bootstraper extends Database
 					$momo->setApiKey($apiUser['api_key']);
 					
 				}
-				return $momo;
+				// return $momo;
+				return $apiUser;
 		}else{
 			if ($apiUser=$this->insertNewApiUser($momo, $api_primary,$api_secondary,"Collection")) {
 				$momo->setApiUserId($apiUser['uuid']);
@@ -128,6 +130,7 @@ class Bootstraper extends Database
 					
 				}
 				return $momo;
+				// return $apiUser;
 		}else{
 			if ($apiUser=$this->insertNewApiUser($momo, $api_primary,$api_secondary,"Remittances")) {
 				$momo->setApiUserId($apiUser['uuid']);
@@ -165,11 +168,8 @@ class Bootstraper extends Database
 					if ($apiUser=$this->getApiKey($momo,$api_primary,$api_secondary)) {
 						$momo->setApiKey($apiUser['api_key']);
 					}
-
 				}else{
-
-					$momo->setApiKey($apiUser['api_key']);
-					
+					$momo->setApiKey($apiUser['api_key']);					
 				}
 				return $momo;
 

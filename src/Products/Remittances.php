@@ -55,7 +55,10 @@ class Remittances extends MomoApp implements TransferInterface
 		$this->setApiToken("");
 		$this->setAuth();
 		$response= $this->send($this->genRequest("POST",MomoLinks::R_TOKEN_URI));
-		return new TokenResponse($response);
+		if($this->db->saveApiToken(new TokenResponse($response),$this->apiPrimaryKey,$this->apiSecondary)){
+			return true;
+		}
+		return false;
 	}
 	public function transferStatus($resourceId){
 		$this->setAuth();
