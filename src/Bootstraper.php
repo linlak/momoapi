@@ -82,8 +82,14 @@ class Bootstraper extends Database
 					$momo->setApiKey($apiUser['api_key']);
 					
 				}
-				// return $momo;
-				return $apiUser;
+				if ((string)$apiUser['access_token']===""||(int)$apiUser['remaining']===0||((int)$apiUser['remaining']<=(int)$apiUser['expires_in']) ) {
+					if ($momo->requestToken()) {
+						$apiUser=$this->checkUser($api_primary,$api_secondary);
+					}
+				}
+				$momo->setApiToken((string)$apiUser['access_token']);
+				return $momo;
+				// return $apiUser;
 		}else{
 			if ($apiUser=$this->insertNewApiUser($momo, $api_primary,$api_secondary,"Collection")) {
 				$momo->setApiUserId($apiUser['uuid']);
@@ -99,6 +105,12 @@ class Bootstraper extends Database
 					$momo->setApiKey($apiUser['api_key']);
 					
 				}
+				if ((string)$apiUser['access_token']===""||(int)$apiUser['remaining']===0||((int)$apiUser['remaining']<=(int)$apiUser['expires_in']) ) {
+					if ($momo->requestToken()) {
+						$apiUser=$this->checkUser($api_primary,$api_secondary);
+					}
+				}
+				$momo->setApiToken((string)$apiUser['access_token']);
 				return $momo;
 			}
 		}
@@ -129,6 +141,12 @@ class Bootstraper extends Database
 					$momo->setApiKey($apiUser['api_key']);
 					
 				}
+				if ((string)$apiUser['access_token']===""||(int)$apiUser['remaining']===0||((int)$apiUser['remaining']<=(int)$apiUser['expires_in']) ) {
+					if ($momo->requestToken()) {
+						$apiUser=$this->checkUser($api_primary,$api_secondary);
+					}
+				}
+				$momo->setApiToken((string)$apiUser['access_token']);
 				return $momo;
 				// return $apiUser;
 		}else{
@@ -146,6 +164,12 @@ class Bootstraper extends Database
 					$momo->setApiKey($apiUser['api_key']);
 					
 				}
+				if ((string)$apiUser['access_token']===""||(int)$apiUser['remaining']===0||((int)$apiUser['remaining']<=(int)$apiUser['expires_in']) ) {
+					if ($momo->requestToken()) {
+						$apiUser=$this->checkUser($api_primary,$api_secondary);
+					}
+				}
+				$momo->setApiToken((string)$apiUser['access_token']);
 				return $momo;
 			}
 		}
@@ -171,6 +195,12 @@ class Bootstraper extends Database
 				}else{
 					$momo->setApiKey($apiUser['api_key']);					
 				}
+				if ((string)$apiUser['access_token']===""||(int)$apiUser['remaining']===0||((int)$apiUser['remaining']<=(int)$apiUser['expires_in']) ) {
+					if ($momo->requestToken()) {
+						$apiUser=$this->checkUser($api_primary,$api_secondary);
+					}
+				}
+				$momo->setApiToken((string)$apiUser['access_token']);
 				return $momo;
 
 		}else{
@@ -188,6 +218,12 @@ class Bootstraper extends Database
 					$momo->setApiKey($apiUser['api_key']);
 					
 				}
+				if ((string)$apiUser['access_token']===""||(int)$apiUser['remaining']===0||((int)$apiUser['remaining']<=(int)$apiUser['expires_in']) ) {
+					if ($momo->requestToken()) {
+						$apiUser=$this->checkUser($api_primary,$api_secondary);
+					}
+				}
+				$momo->setApiToken((string)$apiUser['access_token']);
 				return $momo;
 			}
 		}
@@ -228,7 +264,10 @@ class Bootstraper extends Database
 	}
 	private function checkUser($api_primary,$api_secondary){
 		if (in_array('momo_api_user', $this->found_tables)) {			
-			$sql="SELECT a.uuid,a.api_primary,a.api_secondary,a.product,a.created_at,a.updated_at,a.api_key,a.callback_url FROM momo_api_user a WHERE a.api_primary=:api_primary AND a.api_secondary=:api_secondary";
+			$sql="SELECT a.uuid,a.api_primary,a.api_secondary,a.product,a.created_at,a.updated_at,a.api_key,a.callback_url,b.access_token,b.token_type,b.expires_in,b.started_at,b.expires_at,(b.expires_at-now()) as remaining
+			 FROM momo_api_user a 
+			LEFT JOIN momo_access_tokens b ON a.uuid=b.uuid
+			 WHERE a.api_primary=:api_primary AND a.api_secondary=:api_secondary";
 			$this->query($sql);
 			$this->bind(':api_primary',$api_primary);
 			$this->bind('api_secondary',$api_secondary);
