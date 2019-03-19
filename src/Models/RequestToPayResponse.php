@@ -41,16 +41,35 @@ class RequestToPayResponse extends MomoResponse
 {
 	private $is_accepted=false;//202 
 	private $is_duplicate=false;//409
-	private $resource_exists=false;//200 
-	private $requestStatus;/*"PENDING",
-        "SUCCESSFUL",
-        "FAILED"*/
-	function __construct(array $response)
+	private $referenceId="";
+	private  $requestBody;
+	function __construct(array $response,$referenceId,RequestToPay $requestBody)
 	{
 		parent::__construct($response);
-		
+		$this->handleResponce();
+		$this->referenceId=$referenceId;
+		$this->requestBody=$requestBody;
 	}
-	public function getRequestStatus(){
-		return $this->requestStatus;
+	private function handleResponce(){
+		if ($this->getCode()===202) {
+			$this->is_accepted=true;
+		}else{
+			if ($this->getCode()===409) {
+				$this->is_duplicate=true;
+			}
+		}
+	}
+	public function isAccepted(){
+
+		return $this->is_accepted;
+	}
+	public function isDuplicate(){
+		return $this->is_duplicate;
+	}
+	public  function getRequestBody(){
+		return $this->requestBody;
+	}
+	public function getReferenceId(){
+		return $this->referenceId;
 	}
 }

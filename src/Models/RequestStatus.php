@@ -42,23 +42,42 @@ class RequestStatus extends MomoResponse
     private $payerMessage="";
     private $payeeNote="";
     private $status="";
-	private $reason="";
+    private $reason="";
+	private $financialTranactionId="";
+    private $resource_exists=false;//200 
 	function __construct(array $response){
 		parent::__construct($response);
+        $this->handleResponse();
 	}
-
+    private function handleResponse(){
+        if ($this->getCode()===200) {
+            $this->resource_exists=true;
+        }
+    }
 	public function getStatus(){
         return $this->status;
     }
     public function isSucess(){
-        return $this->status==="";
+        return $this->status==="SUCCESSFUL";
     }
 
     public function isPending(){
-        return $this->status==="";
+        return $this->status==="PENDING";
     }
 
     public function isFailed(){
-        return $this->status==="";
+        return $this->status==="FAILED";
     }
+    public function isRejected()
+    {
+        return ($this->isFailed()&&$this->reason==="");
+    }
+    public function isTimeOut()
+    {
+        return ($this->isFailed()&&$this->reason==="");
+    }
+    /*public function isRejected()
+    {
+        return ($this->isFailed()&&$this->reason==="");
+    }*/
 }

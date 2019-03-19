@@ -36,7 +36,7 @@ use Momo\MomoApp\Models\RequestToPay;
 
 interface CollectionInterface extends ProductCommonsInterface{
 
-	public function requestToPay(RequestToPay $requestBody,$ref,$callbackUri=false);
+	public function requestToPay(RequestToPay $requestBody,$callbackUri=false);
 	public function requestToPayStatus($resourceId);
 	
 }

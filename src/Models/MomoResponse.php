@@ -62,4 +62,12 @@ abstract class MomoResponse
 		}
 		return $this->data[$key];
 	}
+	public function getCode()
+	{
+		return $this->status_code;
+	}
+	public function getPhrase()
+	{
+		return $this->status_phrase;
+	}
 }

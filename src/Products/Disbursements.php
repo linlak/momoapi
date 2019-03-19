@@ -39,7 +39,7 @@ use Momo\MomoApp\Commons\Constants;
 
 use Momo\MomoApp\Models\TokenResponse;
 use Momo\MomoApp\Models\BalanceResponse;
-// use Momo\MomoApp\Models\TokenResponse;
+use Momo\MomoApp\Models\RequestToPayResponse;
 use Momo\MomoApp\Interfaces\TransferInterface;
 /**
 * genRequest
@@ -54,7 +54,7 @@ class Disbursements extends MomoApp implements TransferInterface
 	public function requestToken(){
 		$this->setApiToken("");
 		$this->setAuth();
-		$response = $this->send($this->genRequest("GET",MomoLinks::D_TOKEN_URI));
+		$response = $this->send($this->genRequest("POST",MomoLinks::D_TOKEN_URI));
 		if($this->db->saveApiToken(new TokenResponse($response),$this->apiPrimaryKey,$this->apiSecondary)){
 			return true;
 		}
@@ -68,8 +68,9 @@ class Disbursements extends MomoApp implements TransferInterface
 		
 		return $this->send($this->genRequest("GET",MomoLinks::D_ACCOUNT_HOLDER_URI.$accountHolderIdType.'/'.$accountHolderId.'/active'));
 	}
-	public function transfer(RequestToPay $requestBody,$ref,$callbackUri=false){
-		$this->setHeaders(Constants::H_REF_ID,$ref);
+	public function transfer(RequestToPay $requestBody,$callbackUri=false){
+		$referenceId=$this->gen_uuid();
+		$this->setHeaders(Constants::H_REF_ID,$referenceId);
 		$this->setAuth();
 		if (false!==$callbackUri) {
 			$this->setHeaders(Constants::H_CALL_BACK,$callbackUri);
@@ -77,7 +78,12 @@ class Disbursements extends MomoApp implements TransferInterface
 		if ($this->environ==='sandbox') {
 			$requestBody->setCurrency('EUR');
 		}
-		return $this->send($this->genRequest("POST",MomoLinks::D_TRANSFER_URI,$requestBody->generateRequestBody()));
+		$response = $this->send($this->genRequest("POST", MomoLinks::D_TRANSFER_URI, $requestBody->generateRequestBody()));
+		$result=new RequestToPayResponse($response,$referenceId,$requestBody);
+		if ($result->isAccepted()) {
+			return $this->db->saveRequestToPay($result,$this->apiPrimaryKey,$this->apiSecondary);
+		}
+		return false;
 	}
 	public function requestBalance(){
 		$this->setAuth();

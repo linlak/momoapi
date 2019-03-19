@@ -109,8 +109,7 @@ abstract class Database{
 	public function debugDumpParams(){
     return $this->stmt->debugDumpParams();
 	}
-	final public function retdata($retsql,$values=NULL){
-    
+	final public function retdata($retsql,$values=NULL){    
         $this->query($retsql);
         $this->execute($retsql);
         if(is_null($values)){

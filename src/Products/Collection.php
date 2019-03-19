@@ -39,7 +39,7 @@ use Momo\MomoApp\Commons\Constants;
 
 use Momo\MomoApp\Models\TokenResponse;
 use Momo\MomoApp\Models\BalanceResponse;
-// use Momo\MomoApp\Models\TokenResponse;
+use Momo\MomoApp\Models\RequestToPayResponse;
 
 use Momo\MomoApp\Interfaces\CollectionInterface;
 
@@ -67,8 +67,9 @@ class Collection extends MomoApp implements CollectionInterface
 		return $this->send($this->genRequest("GET",MomoLinks::ACOUNT_HOLDER_URI.$accountHolderIdType.'/'.$accountHolderId.'/active'));
 	}
 
-	public function requestToPay(RequestToPay $requestBody,$ref,$callbackUri=false){
-		$this->setHeaders(Constants::H_REF_ID,$ref);
+	public function requestToPay(RequestToPay $requestBody,$callbackUri=false){
+		$referenceId=$this->gen_uuid();
+		$this->setHeaders(Constants::H_REF_ID,$referenceId);
 		$this->setAuth();
 		if (false!==$callbackUri) {
 			$this->setHeaders(Constants::H_CALL_BACK,$callbackUri);
@@ -76,14 +77,20 @@ class Collection extends MomoApp implements CollectionInterface
 		if ($this->environ==='sandbox') {
 			$requestBody->setCurrency('EUR');
 		}
-		return $this->send($this->genRequest("POST",MomoLinks::REQUEST_TO_PAT_URI,$requestBody->generateRequestBody()));
+		$response= $this->send($this->genRequest("POST",MomoLinks::REQUEST_TO_PAT_URI,$requestBody->generateRequestBody()));
+		$result=new RequestToPayResponse($response,$referenceId,$requestBody);
+		if ($result->isAccepted()) {
+			return $this->db->saveRequestToPay($result,$this->apiPrimaryKey,$this->apiSecondary);
+		}
+		return false;
 	}
-	public function requestToPayStatus($resourceId){
+	public function requestToPayStatus($externalId){
 		$this->setAuth();
 		return $this->send($this->genRequest("GET",MomoLinks::REQUEST_TO_PAT_URI.'/'.$resourceId));
 	}
-	public function requestPreAproval(RequestToPay $requestBody,$ref,$callbackUri=false){
-		$this->setHeaders(Constants::H_REF_ID,$ref);
+	/*public function requestPreAproval(RequestToPay $requestBody,$callbackUri=false){
+		$referenceId=$this->gen_uuid();
+		$this->setHeaders(Constants::H_REF_ID,$referenceId);
 		$this->setAuth();
 		if (false!==$callbackUri) {
 			$this->setHeaders(Constants::H_CALL_BACK,$callbackUri);
@@ -91,8 +98,14 @@ class Collection extends MomoApp implements CollectionInterface
 		if ($this->environ==='sandbox') {
 			$requestBody->setCurrency('EUR');
 		}
-		return $this->send($this->genRequest("POST",MomoLinks::PRE_APPROVAL_URI,$requestBody->generateRequestBody()));
-	}
+		$response=$this->send($this->genRequest("POST",MomoLinks::PRE_APPROVAL_URI,$requestBody->generateRequestBody()));
+		$result=new RequestToPayResponse($response,$referenceId,$requestBody);
+		if ($result->isAccepted()) {
+			return $this->db->saveRequestToPay($result,$this->apiPrimaryKey,$this->apiSecondary);
+		}
+		return false;
+
+	}*/
 	public function requestPreAprovalStatus($resourceId){
 		$this->setAuth();
 		return $this->send($this->genRequest("GET",MomoLinks::PRE_APPROVAL_URI.'/'.$resourceId));

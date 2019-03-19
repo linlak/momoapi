@@ -67,4 +67,28 @@ class RequestToPay{
 		];
 		return json_encode($output,JSON_UNESCAPED_SLASHES);
 	}
+	public function getAmount()	{
+		return $this->amount;
+	}
+	public function getCurrency()	{
+		return $this->currency;
+	}
+	public function getExternalId()	{
+		return $this->externalId;
+	}
+	public function getPartId()	{
+		return $this->payer['partyId'];
+	}
+	public function getPartyIdType()	{
+		return $this->payer['partyIdType'];
+	}
+	public function getPayerMessage()	{
+		return $this->payerMessage;
+	}
+	public function getPayeeNote()	{
+		return $this->payeeNote;
+	}
+	public function getPayer()	{
+		return $this->payer;
+	}
 }

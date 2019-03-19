@@ -2,7 +2,8 @@
 
 This is a php library that has been designed to help developers to easily integrate the **momo api** into their system.
 
-
+## Solution ##
+After finding out that most developers were having trouble integrating the momoapi into there system. We came up with this simple php library to make the integration easy and fast.
 
 ## Prerequisites ##
 
@@ -340,6 +341,8 @@ Linus Nowomukama
 [mailto:ugsalons@gmail.com](mailto:ugsalons@gmail.com "Send Email")
 
 [tel:+256783198167](tel:+256783198167 "Call me")
+
+[tel:+256751921465](tel:+256751921465 "Call or Watsapp")
 
 
 

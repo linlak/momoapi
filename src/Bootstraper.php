@@ -32,11 +32,13 @@ namespace Momo\MomoApp;
 *(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 *OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+use Momo\MomoApp\Commons\MomoTables;
 use Momo\MomoApp\Products\Collection;
 use Momo\MomoApp\Products\Remittances;
 use Momo\MomoApp\Products\Disbursements;
 use Momo\MomoApp\Data\Database;
 use Momo\MomoApp\Models\TokenResponse;
+use Momo\MomoApp\Models\RequestToPayResponse;
 class Bootstraper extends Database
 {
 		
@@ -45,13 +47,7 @@ class Bootstraper extends Database
 	private $cCallback="";
 	private $dCallback="";
 	private $rCallback="";
-	private $tables=[
-		'momo_api_user',
-		'momo_payment_queue',
-		'momo_access_tokens',
-		'momo_payment_success',
-		'momo_payment_failed'
-	];
+	
 	private $found_tables=[];
 	function __construct($host,$dbName,$dbUser,$dbPass,$environ='sandbox')
 	{
@@ -234,7 +230,7 @@ class Bootstraper extends Database
 	}
 
 	private function insertNewApiUser(MomoApp $momo,$api_primary,$api_secondary,$product,$liveCong=array()){	
-		$cBackUrl="";	
+		$cBackUrl="";
 		switch ($product) {
 			case 'Collection':
 				$cBackUrl=$this->cCallback;
@@ -246,7 +242,7 @@ class Bootstraper extends Database
 				$cBackUrl=$this->rCallback;
 				break;
 		}
-			$sql="INSERT INTO momo_api_user (uuid,api_primary,api_secondary,product,callback_url,api_key) VALUES (:uuid,:api_primary,:api_secondary,:product,:callback_url,:api_key) ON DUPLICATE KEY UPDATE uuid=:uuid, api_primary=:api_primary,api_secondary=:api_secondary,product=:product,api_key=:api_key";
+			$sql="INSERT INTO ".MomoTables::API_USER." (uuid,api_primary,api_secondary,product,callback_url,api_key) VALUES (:uuid,:api_primary,:api_secondary,:product,:callback_url,:api_key) ON DUPLICATE KEY UPDATE uuid=:uuid, api_primary=:api_primary,api_secondary=:api_secondary,product=:product,api_key=:api_key";
 
 		if ($this->environ==="sandbox") {
 			if ($res=$momo->createApiUser($cBackUrl)) {
@@ -272,10 +268,10 @@ class Bootstraper extends Database
 		return false;
 	}
 	private function checkUser($api_primary,$api_secondary){
-		if (in_array('momo_api_user', $this->found_tables)) {			
+		if (in_array(MomoTables::API_USER, $this->found_tables)) {			
 			$sql="SELECT a.uuid,a.api_primary,a.api_secondary,a.product,a.created_at,a.updated_at,a.api_key,a.callback_url,b.access_token,b.token_type,b.expires_in,b.started_at,b.expires_at,(b.expires_at-now()) as remaining
-			 FROM momo_api_user a 
-			LEFT JOIN momo_access_tokens b ON a.uuid=b.uuid
+			 FROM ".MomoTables::API_USER." a 
+			LEFT JOIN ".MomoTables::API_TOKENS." b ON a.uuid=b.uuid
 			 WHERE a.api_primary=:api_primary AND a.api_secondary=:api_secondary";
 			$this->query($sql);
 			$this->bind(':api_primary',$api_primary);
@@ -299,10 +295,10 @@ class Bootstraper extends Database
 	private function createTables(){
   		$this->loadExists();
 		$sql="";
-		if (!in_array("momo_api_user", $this->found_tables)) {
+		if (!in_array(MomoTables::API_USER, $this->found_tables)) {
 			$sql.=" 
 
-				CREATE TABLE  `momo_api_user` (
+				CREATE TABLE  `".MomoTables::API_USER."` (
 					  `uuid` varchar(100) NOT NULL,
 					  `api_primary` varchar(255) NOT NULL,
 					  `api_secondary` varchar(255) NOT NULL,
@@ -313,7 +309,7 @@ class Bootstraper extends Database
 					  `callback_url` varchar(255) NULL
 					) ENGINE=InnoDB DEFAULT CHARSET=armscii8;
 
-					CREATE TABLE  `momo_access_tokens` (
+					CREATE TABLE  `".MomoTables::API_TOKENS."` (
 					  `uuid` varchar(100) NOT NULL,
 					  `access_token` TEXT NULL,
 					  `token_type` TEXT NULL,
@@ -322,29 +318,29 @@ class Bootstraper extends Database
 					  `expires_at`  datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 					) ENGINE=InnoDB DEFAULT CHARSET=armscii8;
 
-				ALTER TABLE `momo_api_user` 
+				ALTER TABLE `".MomoTables::API_USER."` 
 				ADD PRIMARY KEY (`uuid`),
 				ADD UNIQUE KEY `api_primary` (`api_primary`),
 				ADD UNIQUE KEY `api_secondary` (`api_secondary`),
 				ADD UNIQUE `unique_user` (`api_primary`, `api_secondary`) USING BTREE;
 
-				ALTER TABLE `momo_access_tokens` 
+				ALTER TABLE `".MomoTables::API_TOKENS."` 
 				ADD PRIMARY KEY (`uuid`);
 
-				ALTER TABLE `momo_access_tokens`
+				ALTER TABLE `".MomoTables::API_TOKENS."`
   				ADD CONSTRAINT `fk_momo_token_api_uuid` FOREIGN KEY (`uuid`)
-  				 REFERENCES `momo_api_user` (`uuid`) 
+  				 REFERENCES `".MomoTables::API_USER."` (`uuid`) 
   				 ON DELETE CASCADE ON UPDATE CASCADE;
 
 			";
-			$sql.=$this->paymentsTable('momo_payment_queue','queue');						
-			$sql.=$this->paymentsTable('momo_payment_success','success');
-			$sql.=$this->paymentsTable('momo_payment_failed','failed');
+			$sql.=$this->paymentsTable(MomoTables::API_COLLECTION,'collections');						
+			$sql.=$this->paymentsTable(MomoTables::API_REMITTANCES,'remittances');
+			$sql.=$this->paymentsTable(MomoTables::API_DISBURSEMENTS,'desbursements');
 			// $sql.=$this->paymentsTable('momo_payment_queue','queue');
 		}else{
-			$sql.=$this->paymentsTable('momo_payment_queue','queue');						
-			$sql.=$this->paymentsTable('momo_payment_success','success');
-			$sql.=$this->paymentsTable('momo_payment_failed','failed');
+			$sql.=$this->paymentsTable(MomoTables::API_COLLECTION,'collections');						
+			$sql.=$this->paymentsTable(MomoTables::API_REMITTANCES,'remittances');
+			$sql.=$this->paymentsTable(MomoTables::API_DISBURSEMENTS,'desbursements');
 			// $sql.=$this->paymentsTable('momo_payment_queue','queue');
 		}
 		$sql=(string)trim($sql);
@@ -355,7 +351,45 @@ class Bootstraper extends Database
 				
 		}
 	}
+	public function updateRequestToPay(RequestStatus $result,$api_primary,$api_secondary){
+		
+	}
+	public function saveRequestToPay(RequestToPayResponse $result,$api_primary,$api_secondary){
+		if ($result->isAccepted()) {		
+			if ($apiUser=$this->checkUser($api_primary,$api_secondary)) {
+				$tbName="";
+				switch ($apiUser['product']) {
+					case 'Collection':
+						$tbName=MomoTables::API_COLLECTION;
+						break;
+					case 'Disbursements':
+						$tbName=MomoTables::API_DISBURSEMENTS;
+						break;
+					case 'Remittances':
+						$tbName=MomoTables::API_REMITTANCES;
+						break;
+					default:
+						return false;
+				}
+				$data=[
+					'referenceId'=>$result->getReferenceId(),
+					'uuid'=>$apiUser['uuid'],
 
+					'amount'=>$result->getRequestBody()->getAmount(),
+					'partyIdType'=>$result->getRequestBody()->getPartyIdType(),
+					'partyId'=>$result->getRequestBody()->getPartId(),
+					'externalId'=>$result->getRequestBody()->getExternalId(),
+					'payerMessage'=>$result->getRequestBody()->getPayerMessage(),
+					'payeeNote'=>$result->getRequestBody()->getPayeeNote(),
+					'currency'=>$result->getRequestBody()->getCurrency()
+				];
+				if($this->genInsert($tbName,$data)){
+					return true;
+				}
+			}	
+		}
+		return false;
+	}
 	private function paymentsTable($tbName,$fkPrefix){
 		$sql="";
 		if (!in_array($tbName, $this->found_tables)) {
@@ -368,6 +402,7 @@ class Bootstraper extends Database
 							  `currency` varchar(255) NOT NULL,
 							  `externalId` varchar(100) NOT NULL,
 							  `payerMessage` TEXT  NULL,
+							  `financialTranactionId` varchar(256) NULL,
 							  `payeeNote` TEXT  NULL,
 							  `status` varchar(20) NOT NULL DEFAULT 'PENDING',
 							  `reason` TEXT  NULL,
@@ -381,7 +416,7 @@ class Bootstraper extends Database
 
 							ALTER TABLE `$tbName`
   							ADD CONSTRAINT `fk_momo_".$fkPrefix."_api_uuid` 
-  							FOREIGN KEY (`uuid`) REFERENCES `momo_api_user` (`uuid`) 
+  							FOREIGN KEY (`uuid`) REFERENCES `".MomoTables::API_USER."` (`uuid`) 
   							ON DELETE CASCADE ON UPDATE CASCADE;
 					";	
 			}
@@ -400,14 +435,14 @@ class Bootstraper extends Database
 	private function saveApiKey($api_primary,$api_secondary,$api_key){
 		if($apiUser = $this->checkUser($api_primary,$api_secondary)){
 			$user=['api_key'=>$api_key];
-			return $this->genUpdate('momo_api_user',$user,['uuid'=>$apiUser['uuid']],1);
+			return $this->genUpdate(MomoTables::API_USER,$user,['uuid'=>$apiUser['uuid']],1);
 		}
 	}
 
 	public function saveApiToken(TokenResponse $response,$api_primary,$api_secondary){
 		if ($response->isCreated()) {
 			if ($apiUser=$this->checkUser($api_primary,$api_secondary)) {
-				$sql="INSERT INTO momo_access_tokens (uuid,access_token,token_type,expires_in,expires_at) VALUES (:uuid,:access_token,:token_type,:expires_in,DATE_ADD(NOW(),INTERVAL :expires_in SECOND)) ON DUPLICATE KEY UPDATE access_token=:access_token,token_type=:token_type,expires_in=:expires_in,started_at=NOW(),expires_at=DATE_ADD(NOW(),INTERVAL :expires_in SECOND)";
+				$sql="INSERT INTO ".MomoTables::API_TOKENS." (uuid,access_token,token_type,expires_in,expires_at) VALUES (:uuid,:access_token,:token_type,:expires_in,DATE_ADD(NOW(),INTERVAL :expires_in SECOND)) ON DUPLICATE KEY UPDATE access_token=:access_token,token_type=:token_type,expires_in=:expires_in,started_at=NOW(),expires_at=DATE_ADD(NOW(),INTERVAL :expires_in SECOND)";
 				$this->query($sql);
 				$this->bind(':access_token',$response->getAccessToken());
 				$this->bind(':token_type',$response->getTokenType());

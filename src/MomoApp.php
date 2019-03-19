@@ -172,7 +172,7 @@ abstract class MomoApp implements MomoInterface{
 			}, function (RequestException $e){	
 			// echo(Psr7\str($e->getRequest())."\n\r");	
 				if ($e->hasResponse()) {		
-						// echo(Psr7\str($e->getResponse())."\n\r");		
+						echo(Psr7\str($e->getResponse())."\n\r");		
 					return $this->passResponse($e->getResponse());
 				}
 				return [

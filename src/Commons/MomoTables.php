@@ -1,5 +1,5 @@
 <?php
-namespace Momo\MomoApp\Interfaces;
+namespace Momo\MomoApp\Commons;
 /**
 *Copyright (c) 2019, LinWorld Tech Solutions.
 *
@@ -32,11 +32,18 @@ namespace Momo\MomoApp\Interfaces;
 *(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 *OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-use Momo\MomoApp\Models\RequestToPay;
 
-interface TransferInterface extends ProductCommonsInterface{
+class MomoTables 
+{
 	
-	public function transfer(RequestToPay $requestBody,$callbackUri=false);
-	public function transferStatus($resourceId);
-	
+	private function __construct()
+	{
+		# code...
+	}
+	const API_USER="momo_api_user";
+	const API_TOKENS="momo_access_tokens";
+	const API_COLLECTION="momo_collections";
+	const API_DISBURSEMENTS="momo_disbursements";
+	const API_REMITTANCES="momo_remittances";
+	// const API_USER="";
 }

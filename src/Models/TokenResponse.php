@@ -58,7 +58,7 @@ class TokenResponse extends MomoResponse
 		return $this->access_token;
 	}
 	public function getTokenType(){
-		$this->token_type;
+		return $this->token_type;
 	}
 	public function getExpiresIn(){
 		return $this->expires_in;
