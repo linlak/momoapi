@@ -38,7 +38,7 @@ Use composer to manage your dependencies and download Momo Api Library:
 	
 	composer require linlak/momoapi
 	
-## Example ##
+## Examples ##
 **Creating ApiUser** [https://momodeveloper.mtn.com/docs/services/sandbox-provisioning-api](https://momodeveloper.mtn.com/docs/services/sandbox-provisioning-api "Read More")
 
 The following code snippet will help to create an **apiUser** this supports all products these include:
