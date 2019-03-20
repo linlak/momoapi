@@ -87,10 +87,19 @@ class Collection extends MomoApp implements CollectionInterface
 		}
 		return false;
 	}
-	public function requestToPayStatus($externalId){
-		$this->setAuth();
-		$response= $this->send($this->genRequest("GET",MomoLinks::REQUEST_TO_PAY_URI.'/'.$resourceId));
-		$result=new RequestStatus($response);
+	public function requestToPayStatus($referenceId){
+		if($payt=$this->db->getPayment($referenceId,$this->apiPrimaryKey,$this->apiSecondary)){
+			if ($payt['status']==="PENDING") {
+				$this->setAuth();
+				$response= $this->send($this->genRequest("GET",MomoLinks::REQUEST_TO_PAY_URI.'/'.$referenceId));
+				$result=new RequestStatus($response,$referenceId);
+				if ($this->db->updateRequestToPay($result,$this->apiPrimaryKey,$this->apiSecondary)) {
+					$payt=$this->db->getPayment($referenceId,$this->apiPrimaryKey,$this->apiSecondary);
+				}
+			}	
+			return $payt;		
+		}
+		return false;
 	}
 
 	/*public function requestPreAproval(RequestToPay $requestBody,$callbackUri=false){

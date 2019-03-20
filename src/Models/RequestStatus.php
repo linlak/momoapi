@@ -1,4 +1,5 @@
 <?php
+namespace Momo\MomoApp\Models;
 /**
 *Copyright (c) 2019, LinWorld Tech Solutions.
 *
@@ -42,20 +43,39 @@ class RequestStatus extends MomoResponse
     private $payerMessage="";
     private $payeeNote="";
     private $status="";
-    private $reason="";
-	private $financialTranactionId="";
+    private $reason=null;
+	private $financialTranactionId=null;
     private $resource_exists=false;//200 
-	function __construct(array $response){
+    private $referenceId="";
+	function __construct(array $response,$referenceId){
 		parent::__construct($response);
+        $this->referenceId=$referenceId;
         $this->handleResponse();
 	}
     private function handleResponse(){
         if ($this->getCode()===200) {
             $this->resource_exists=true;
+            $this->amount=$this->getData('amount');
+            $this->financialTranactionId=$this->getData('financialTranactionId');
+            $this->reason=$this->getData('reason');
+            $this->status=$this->getData('status');
+            $this->payerMessage=$this->getData('payerMessage');
+            $this->payeeNote=$this->getData('payeeNote');
+            $this->payer=$this->getData('payer');
+            $this->externalId=$this->getData('externalId');
         }
+    }
+    public function getReferenceId(){
+        return $this->referenceId;
     }
 	public function getStatus(){
         return $this->status;
+    }
+    public function getReason(){
+        return $this->reason;
+    }
+    public function getFinancialTransId(){
+        return $this->financialTranactionId;
     }
     public function isSucess(){
         return $this->status==="SUCCESSFUL";

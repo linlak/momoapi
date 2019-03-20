@@ -39,6 +39,7 @@ use Momo\MomoApp\Products\Disbursements;
 use Momo\MomoApp\Data\Database;
 use Momo\MomoApp\Models\TokenResponse;
 use Momo\MomoApp\Models\RequestToPayResponse;
+use Momo\MomoApp\Models\RequestStatus;
 class Bootstraper extends Database
 {
 		
@@ -353,6 +354,35 @@ class Bootstraper extends Database
 		$sql.=$this->paymentsTable(MomoTables::API_DISBURSEMENTS,'desbursements');
 		return $sql;
 	}
+	public function getPayment($referenceId,$api_primary,$api_secondary){
+		if ($apiUser=$this->checkUser($api_primary,$api_secondary)) {
+			$tbName="";
+				switch ($apiUser['product']) {
+					case 'Collection':
+						# code...
+					$tbName=MomoTables::API_COLLECTION;
+						break;
+					case 'Disbursements':
+						# code...
+					$tbName=MomoTables::API_DISBURSEMENTS;
+						break;
+					case 'Remittances':
+						# code...
+					$tbName=MomoTables::API_REMITTANCES;
+						break;
+				}
+				if ($tbName!=="") {
+					return $this->checkResourseExists($referenceId,$api_primary,$api_secondary,$tbName);
+				}
+		}
+			return false;
+	}
+	private function checkResourseExists($referenceId,$api_primary,$api_secondary,$tbName){	
+		$sql="SELECT referenceId,amount,partyIdType,partyIdType,partyId,currency,externalId,payerMessage,financialTranactionId,payeeNote,status,reason,created_at,updated_at FROM $tbName WHERE referenceId=:referenceId";
+		$this->query($sql);
+		$this->bind(':referenceId',$referenceId);
+		return $this->single();
+	}
 	public function updateRequestToPay(RequestStatus $result,$api_primary,$api_secondary){
 		if ($result->resourceExists()) {
 			if ($apiUser=$this->checkUser($api_primary,$api_secondary)) {
@@ -370,6 +400,20 @@ class Bootstraper extends Database
 						# code...
 					$tbName=MomoTables::API_REMITTANCES;
 						break;
+				}
+				if ($tbName!=="") {
+					if($upPay=$this->checkResourseExists($result->getReferenceId(),$api_primary,$api_secondary,$tbName)){
+						if ($upPay['status']==="PENDING") {
+							$upData=[
+								'status'=>$result->getStatus(),
+								'reason'=>$result->getReason(),
+								'financialTranactionId'=>$result->getFinancialTransId(),
+							];
+							if ($this->genUpdate($tbName,$upData,['referenceId'=>$result->getReferenceId()],1)) {
+								return true;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -405,7 +449,7 @@ class Bootstraper extends Database
 					'currency'=>$result->getRequestBody()->getCurrency()
 				];
 				if($this->genInsert($tbName,$data)){
-					return $data;
+					return $this->getPayment($result->getReferenceId(),$api_primary,$api_secondary);
 				}
 			}	
 		}

@@ -40,6 +40,7 @@ use Momo\MomoApp\Commons\Constants;
 use Momo\MomoApp\Models\TokenResponse;
 use Momo\MomoApp\Models\BalanceResponse;
 use Momo\MomoApp\Models\RequestToPayResponse;
+use Momo\MomoApp\Models\RequestStatus;
 use Momo\MomoApp\Interfaces\TransferInterface;
 /**
 * genRequest
@@ -60,9 +61,19 @@ class Disbursements extends MomoApp implements TransferInterface
 		}
 		return false;
 	}
-	public function transferStatus($resourceId){
-		$this->setAuth();
-		return $this->send($this->genRequest("GET",MomoLinks::D_TRANSFER_URI.'/'.$resourceId));
+	public function transferStatus($referenceId){
+		if($payt=$this->db->getPayment($referenceId,$this->apiPrimaryKey,$this->apiSecondary)){
+			if ($payt['status']==="PENDING") {
+				$this->setAuth();
+				$response= $this->send($this->genRequest("GET",MomoLinks::D_TRANSFER_URI.'/'.$referenceId));
+			$result=new RequestStatus($response,$referenceId);
+				if ($this->db->updateRequestToPay($result,$this->apiPrimaryKey,$this->apiSecondary)) {
+					$payt=$this->db->getPayment($referenceId,$this->apiPrimaryKey,$this->apiSecondary);
+				}
+			}	
+			return $payt;		
+		}
+		return false;
 	}
 	public function acountHolder($accountHolderIdType,$accountHolderId){
 		
