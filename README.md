@@ -325,8 +325,17 @@ We are now going to perform a transfer and tranferStatus.
 
 ![](https://github.com/linlak/momoapi/blob/master/images/reqstatus.png)
 
+The image above show the result for the files listed above.
+You are required to compare the results with your payments table to confirm if the request was created,successful,timed out or rejected.
 
-If you are successful up to this step, Congratulations you have managed to integrate the momoapi into your system. Though there is still more yet to come keep checking in for updates and I strongly recommend you to use **Composer** for your php dependency management,it will help you to easily update libraries in a single command.
+For **request_topay.php** status is **PENDING** for the rest it can be either PENDING, SUCCESSFUL, FAILED. If status is **FAILED** you should check the **reason** to see if it was rejected or timed out.
+
+Note: If the result is not as in the image shown above then request was not successful, or resource was not found in these cases the result is false therefore it is better you wrap it in an **IF** statement.****
+
+> As you all know that
+> Programming is an Art. You can now manipulate the result to meet your desired outcome.
+
+If you are successful up to this step, Congratulations you have managed to integrate the momo api into your system. Though there is still more yet to come keep checking in for updates and I strongly recommend you to use **Composer** for your php dependency management,it will help you to easily update libraries in a single command.
 	
 	composer update
 
