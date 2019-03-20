@@ -40,6 +40,7 @@ use Momo\MomoApp\Commons\Constants;
 use Momo\MomoApp\Models\TokenResponse;
 use Momo\MomoApp\Models\BalanceResponse;
 use Momo\MomoApp\Models\RequestToPayResponse;
+use Momo\MomoApp\Models\RequestStatus;
 
 use Momo\MomoApp\Interfaces\CollectionInterface;
 
@@ -77,7 +78,7 @@ class Collection extends MomoApp implements CollectionInterface
 		if ($this->environ==='sandbox') {
 			$requestBody->setCurrency('EUR');
 		}
-		$response= $this->send($this->genRequest("POST",MomoLinks::REQUEST_TO_PAT_URI,$requestBody->generateRequestBody()));
+		$response= $this->send($this->genRequest("POST",MomoLinks::REQUEST_TO_PAY_URI,$requestBody->generateRequestBody()));
 
 		$result=new RequestToPayResponse($response,$referenceId,$requestBody);
 
@@ -88,7 +89,8 @@ class Collection extends MomoApp implements CollectionInterface
 	}
 	public function requestToPayStatus($externalId){
 		$this->setAuth();
-		return $this->send($this->genRequest("GET",MomoLinks::REQUEST_TO_PAT_URI.'/'.$resourceId));
+		$response= $this->send($this->genRequest("GET",MomoLinks::REQUEST_TO_PAY_URI.'/'.$resourceId));
+		$result=new RequestStatus($response);
 	}
 
 	/*public function requestPreAproval(RequestToPay $requestBody,$callbackUri=false){
