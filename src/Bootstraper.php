@@ -229,7 +229,8 @@ class Bootstraper extends Database
 		return $momo;
 	}
 
-	private function insertNewApiUser(MomoApp $momo,$api_primary,$api_secondary,$product,$liveCong=array()){	
+	private function insertNewApiUser(MomoApp $momo,$api_primary,$api_secondary,$product,$callBack=null,$liveCong=array()){	
+
 		$cBackUrl="";
 		switch ($product) {
 			case 'Collection':
@@ -333,15 +334,9 @@ class Bootstraper extends Database
   				 ON DELETE CASCADE ON UPDATE CASCADE;
 
 			";
-			$sql.=$this->paymentsTable(MomoTables::API_COLLECTION,'collections');						
-			$sql.=$this->paymentsTable(MomoTables::API_REMITTANCES,'remittances');
-			$sql.=$this->paymentsTable(MomoTables::API_DISBURSEMENTS,'desbursements');
-			// $sql.=$this->paymentsTable('momo_payment_queue','queue');
+			$sql.=$this->addMore();
 		}else{
-			$sql.=$this->paymentsTable(MomoTables::API_COLLECTION,'collections');						
-			$sql.=$this->paymentsTable(MomoTables::API_REMITTANCES,'remittances');
-			$sql.=$this->paymentsTable(MomoTables::API_DISBURSEMENTS,'desbursements');
-			// $sql.=$this->paymentsTable('momo_payment_queue','queue');
+			$sql.=$this->addMore();
 		}
 		$sql=(string)trim($sql);
 
@@ -351,8 +346,34 @@ class Bootstraper extends Database
 				
 		}
 	}
+	private function addMore(){
+		$sql="";
+		$sql.=$this->paymentsTable(MomoTables::API_COLLECTION,'collections');				
+		$sql.=$this->paymentsTable(MomoTables::API_REMITTANCES,'remittances');
+		$sql.=$this->paymentsTable(MomoTables::API_DISBURSEMENTS,'desbursements');
+		return $sql;
+	}
 	public function updateRequestToPay(RequestStatus $result,$api_primary,$api_secondary){
-		
+		if ($result->resourceExists()) {
+			if ($apiUser=$this->checkUser($api_primary,$api_secondary)) {
+				$tbName="";
+				switch ($apiUser['product']) {
+					case 'Collection':
+						# code...
+					$tbName=MomoTables::API_COLLECTION;
+						break;
+					case 'Disbursements':
+						# code...
+					$tbName=MomoTables::API_DISBURSEMENTS;
+						break;
+					case 'Remittances':
+						# code...
+					$tbName=MomoTables::API_REMITTANCES;
+						break;
+				}
+			}
+		}
+		return false;
 	}
 	public function saveRequestToPay(RequestToPayResponse $result,$api_primary,$api_secondary){
 		if ($result->isAccepted()) {		
@@ -384,7 +405,7 @@ class Bootstraper extends Database
 					'currency'=>$result->getRequestBody()->getCurrency()
 				];
 				if($this->genInsert($tbName,$data)){
-					return true;
+					return $data;
 				}
 			}	
 		}

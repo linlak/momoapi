@@ -78,7 +78,9 @@ class Collection extends MomoApp implements CollectionInterface
 			$requestBody->setCurrency('EUR');
 		}
 		$response= $this->send($this->genRequest("POST",MomoLinks::REQUEST_TO_PAT_URI,$requestBody->generateRequestBody()));
+
 		$result=new RequestToPayResponse($response,$referenceId,$requestBody);
+
 		if ($result->isAccepted()) {
 			return $this->db->saveRequestToPay($result,$this->apiPrimaryKey,$this->apiSecondary);
 		}
@@ -88,6 +90,7 @@ class Collection extends MomoApp implements CollectionInterface
 		$this->setAuth();
 		return $this->send($this->genRequest("GET",MomoLinks::REQUEST_TO_PAT_URI.'/'.$resourceId));
 	}
+
 	/*public function requestPreAproval(RequestToPay $requestBody,$callbackUri=false){
 		$referenceId=$this->gen_uuid();
 		$this->setHeaders(Constants::H_REF_ID,$referenceId);

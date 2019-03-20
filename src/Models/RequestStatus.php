@@ -76,8 +76,8 @@ class RequestStatus extends MomoResponse
     {
         return ($this->isFailed()&&$this->reason==="");
     }
-    /*public function isRejected()
+    public function resourceExists()
     {
-        return ($this->isFailed()&&$this->reason==="");
-    }*/
+        return $this->resource_exists;
+    }
 }
