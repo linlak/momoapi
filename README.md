@@ -315,6 +315,17 @@ We are now going to perform a transfer and tranferStatus.
 		print_r($result);
 
 
+
+**sample result for the following files**
+
+- request_topay.php
+- request_status.php
+- transfer.php
+- transfer_status.php
+
+
+
+
 If you are successful up to this step, Congratulations you have managed to integrate the momoapi into your system. Though there is still more yet to come keep checking in for updates and I strongly recommend you to use **Composer** for your php dependency management,it will help you to easily update libraries in a single command.
 	
 	composer update
