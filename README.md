@@ -239,10 +239,8 @@ We are now going to perform a requestToPay and requestToPayStatus.
 
 		$callbackUrl="{url to your webhook}";
 
-		$ref=$collection->gen_uuid(); //you should save this for future reference
-
 		//array
-		$result=$collection->requestToPay($requestToPay,$ref,$callbackUrl);
+		$result=$collection->requestToPay($requestToPay,$callbackUrl);
 		//let's print the result
 
 		echo "<pre>";
@@ -255,7 +253,7 @@ We are now going to perform a requestToPay and requestToPayStatus.
 	<?php
 		require_once "momo_collections.php";
 
-		$ref="{ref you created in request_topay.php}";
+		$referenceId="{referenceId  returned in request_topay.php}";
 
 		//array
 		$result=$collection->requestToPayStatus($ref);
@@ -287,12 +285,10 @@ We are now going to perform a transfer and tranferStatus.
 		$requestToPay->setCurrency("{curency}");// read docs for more info on supported currencies.
 
 		$callbackUrl="{url to your webhook}";
-
-		$ref=$remittances->gen_uuid(); //you should save this for future reference
-
+		
 		//array
 
-		$result=$remittances->transfer($requestToPay,$ref,$callbackUrl);
+		$result=$remittances->transfer($requestToPay,$callbackUrl);
 
 		//let's print the result
 
@@ -307,11 +303,11 @@ We are now going to perform a transfer and tranferStatus.
 
 		//for Disbursements replace remittances with disbursements
 		
-		$ref="{ref you created in transer.php}";
+		$referenceId="{referenceId  returned in transer.php}";
 
 		//array
 
-		$result=$remittances->transferStatus($ref);
+		$result=$remittances->transferStatus($referenceId);
 
 		//let's print the result
 
