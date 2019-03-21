@@ -31,5 +31,13 @@
         "psr-4": {
             "Momo\\MomoApp\\": "src/"
         }
+    },
+    "suggest": {
+        "guzzlehttp/guzzle": "Required to perform http requests"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
     }
 }
