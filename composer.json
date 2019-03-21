@@ -11,6 +11,7 @@
           "mtn open api", "momo pay uganda", 
           "mobile money api"
       ],
+    "minimum-stability": "dev",
     "license": "MIT",
     "authors": [
         {
