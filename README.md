@@ -349,6 +349,12 @@ Setting **Webhooks** these will help you to write code for the callbackUrl. For 
 
 Check in for updates.
 
+## Acknowledgements ##
+
+Every good work is always appreciated and for this reason I should acknowledge appreciations from some of the users who found this tool valuable.
+
+**1. APPSCORE INSTITUTE OF DIGITAL TECHNOLOGY** - I thank APPSCORE for the Certificate
+
 **Nice coding**
 
 Regards
