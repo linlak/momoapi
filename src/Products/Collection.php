@@ -120,10 +120,20 @@ class Collection extends MomoApp implements CollectionInterface
 		return false;
 
 	}*/
-	public function requestPreAprovalStatus($resourceId){
-		$this->setAuth();
-		return $this->send($this->genRequest("GET",MomoLinks::PRE_APPROVAL_URI.'/'.$resourceId));
-	}
+	/*public function requestPreAprovalStatus($referenceId){
+		if($payt=$this->db->getPayment($referenceId,$this->apiPrimaryKey,$this->apiSecondary)){
+			if ($payt['status']==="PENDING") {
+				$this->setAuth();
+				$response= $this->send($this->genRequest("GET",MomoLinks::PRE_APPROVAL_URI.'/'.$referenceId));
+				$result=new RequestStatus($response,$referenceId);
+				if ($this->db->updateRequestToPay($result,$this->apiPrimaryKey,$this->apiSecondary)) {
+					$payt=$this->db->getPayment($referenceId,$this->apiPrimaryKey,$this->apiSecondary);
+				}
+			}	
+			return $payt;		
+		}
+		return false;
+	}*/
 	public function requestBalance(){
 		$this->setAuth();
 		$response = $this->send($this->genRequest("GET",MomoLinks::BALANCE_URI));	
