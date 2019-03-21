@@ -57,6 +57,7 @@ Let's start by bootstrapping our momo library in the code snippet bellow.
 
 **Note: ** The apiUser is generated automatically
 
+
 ***momo_bootstrap.php***
 
 	<?php
@@ -256,7 +257,7 @@ We are now going to perform a requestToPay and requestToPayStatus.
 		$referenceId="{referenceId  returned in request_topay.php}";
 
 		//array
-		$result=$collection->requestToPayStatus($ref);
+		$result=$collection->requestToPayStatus($referenceId);
 		//let's print the result
 
 		echo "<pre>";
