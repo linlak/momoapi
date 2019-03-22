@@ -35,15 +35,18 @@ namespace Momo\MomoApp\WebHooks;
 use Momo\MomoApp\Commons\MomoLinks;
 use Momo\MomoApp\Commons\Constants;
 use Momo\MomoApp\Products\Remittances;
-/**
-* genRequest
-*/
+
 class RemittanceHooks 
 {
-	
+	$remittances;
 	function __construct(Remittances $remittances)
 	{
-		# code...
+		$this->remittances=$remittances;
 	}
-	public function reqisterHook(){}
+	public function reqisterHook(){
+		$data=json_decode(file_get_contents('php://input'),1);
+		if ($data!==null) {
+			
+		}
+	}
 }
