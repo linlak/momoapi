@@ -1,6 +1,6 @@
 /images             export-ignore
 /tests              export-ignore
-/src/codes              export-ignore
+/src/codes          export-ignore
 /.gitattributes     export-ignore
 /.gitignore         export-ignore
 /phpunit.xml        export-ignore

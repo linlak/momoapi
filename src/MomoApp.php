@@ -145,6 +145,7 @@ abstract class MomoApp implements MomoInterface{
 		
 			$authKey=$this->apiUserId.':'.$this->apiKey;
 			$this->setHeaders(Constants::H_AUTH,'Basic '.base64_encode($authKey));
+
 		}
 	}
 
@@ -163,8 +164,7 @@ abstract class MomoApp implements MomoInterface{
 		}
 		return $request;
 	}
-	public function send(Request $request){
-		
+	public function send(Request $request){		
 		$promise=$this->_client->sendAsync($request)
 			->then(function (ResponseInterface $res){
 			// echo(Psr7\str($res));	
