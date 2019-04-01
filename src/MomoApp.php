@@ -40,11 +40,12 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
-use Momo\MomoApp\Models\ApiUserResponse;
-use Momo\MomoApp\Models\ApiKeyResponse;
-use Momo\MomoApp\Models\apiUserInfoResponse;
-abstract class MomoApp implements MomoInterface{
 
+use Momo\MomoApp\Traits\CreateApiUser;
+
+abstract class MomoApp implements MomoInterface{
+	use CreateApiUser;
+	
 	protected $environ="sandbox";//live
 	protected $apiVersion='v1_0';
 	protected $baseUri = 'https://ericssonbasicapi2.azure-api.net/';
@@ -106,15 +107,20 @@ abstract class MomoApp implements MomoInterface{
 	        mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
 	    );
 	}
-	private function genHeaders(){		
+	private function genHeaders()
+	{	
+
 		$this->setHeaders(Constants::H_ENVIRON,$this->environ);
 		$this->setHeaders(Constants::H_C_TYPE,'application/json');
 		$this->setHeaders(Constants::H_OCP_APIM,$this->apiPrimaryKey);
 	}
 	public function setHeaders($key,$value){
+
 		$this->headers[$key]=$value;
 	}
-	public function setApiUserId($apiUserId){
+	public function setApiUserId($apiUserId)
+	{
+
 		$this->apiUserId=$apiUserId;
 	}
 	public function setApiKey($apiKey){
@@ -191,28 +197,7 @@ abstract class MomoApp implements MomoInterface{
 		}
 		unset($this->headers[$key]);
 	}
-	public function createApiUser($providerCallbackHost){
-		$uid=$this->gen_uuid();
-		$this->setHeaders(Constants::H_REF_ID,$uid);
-		$this->removeHeader(Constants::H_AUTH);
-		$this->removeHeader(Constants::H_ENVIRON);
-		$body=['providerCallbackHost'=>$providerCallbackHost];
-		$result=$this->send($this->genRequest("POST",MomoLinks::USER_URI,$body));
-		return new ApiUserResponse($result,$uid);
-	}
-	public function getApiUser(){
-		$this->removeHeader(Constants::H_AUTH);
-		$this->removeHeader(Constants::H_ENVIRON);
-		$result=$this->send($this->genRequest("GET",MomoLinks::USER_URI.'/'.$this->apiUserId));
-		return new ApiUserInfoResponse($result,$this->apiUserId);
-	}
-	public function getApikey(){
-		$this->removeHeader(Constants::H_AUTH);
-		$this->removeHeader(Constants::H_ENVIRON);
-		$result=$this->send($this->genRequest("POST",MomoLinks::USER_URI.'/'.$this->apiUserId.'/apikey'));
-		return new ApiKeyResponse($result,$this->apiUserId);
-	}
-	public function apiUserHook(){}
+	
 	
 
 }

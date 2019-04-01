@@ -1,5 +1,5 @@
 <?php
-namespace Momo\MomoApp\Products;
+namespace Momo\MomoApp\Traits;
 /**
 *Copyright (c) 2019, LinWorld Tech Solutions.
 *
@@ -32,29 +32,17 @@ namespace Momo\MomoApp\Products;
 *(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 *OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-use Momo\MomoApp\MomoApp;
 
-use Momo\MomoApp\Commons\MomoLinks;
+use Momo\MomoApp\Models\BalanceResponse;
 
-use Momo\MomoApp\Interfaces\TransferInterface;
+trait ChecksBalance{
 
-use Momo\MomoApp\Traits\TransfersFunds;
-/**
-* genRequest
-*/
-class Disbursements extends MomoApp implements TransferInterface
-{
-	use TransfersFunds;
+	public function requestBalance(){
 
-	protected $token_url=MomoLinks::D_TOKEN_URI;
-	protected $account_holder=MomoLinks::D_ACCOUNT_HOLDER_URI;
-	protected $balance_uri=MomoLinks::D_BALANCE_URI;
+		$this->setAuth();
+		$response = $this->send($this->genRequest("GET",$this->balance_uri));	
 
-	protected $request_uri=MomoLinks::D_TRANSFER_URI;
-
-	function __construct($apiKey,$apiSecret,$environ='sandbox')
-	{
-		parent::__construct($apiKey,$apiSecret,$environ);
+		return new BalanceResponse($response);
+		
 	}
-	
 }
