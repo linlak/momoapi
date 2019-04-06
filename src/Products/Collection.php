@@ -55,8 +55,5 @@ class Collection extends MomoApp implements CollectionInterface
 	{
 		parent::__construct($apiKey,$apiSecret,$environ);
 	}
-
-	
-
 	
 }

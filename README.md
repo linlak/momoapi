@@ -65,7 +65,7 @@ Let's start by bootstrapping our momo library in the code snippet bellow.
 		require '{path-to-vendor}/vendor/autoload.php';
 
 		use Momo\MomoApp\Bootstraper;
-		$momoBootstrap=new Bootstraper('{dbHost}','{dbName}','{dbUser}','{dbPass}',{environment});
+		$momoBootstrap=new Bootstraper('{dbHost}','{dbName}','{dbUser}','{dbPass}','{environment}');
 		  
 We are going to perform the following tasks here:
 
