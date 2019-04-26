@@ -33,6 +33,12 @@ namespace Momo\MomoApp;
 *OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 use GuzzleHttp\Client;
+
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
+
+
+
 use Momo\MomoApp\Interfaces\MomoInterface;
 use Momo\MomoApp\Commons\MomoLinks;
 use Momo\MomoApp\Commons\Constants;
@@ -106,6 +112,16 @@ abstract class MomoApp implements MomoInterface{
 	        // 48 bits for "node"
 	        mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
 	    );
+	}
+	public function uuid4(){
+		try {
+			$uuid4=Uuid::uuid4();
+			return $uuid4->toString();
+		} catch (UnsatisfiedDependencyException $e) {
+			$err=$e->getMessage();
+			return $this->gen_uuid();
+			
+		}
 	}
 	private function genHeaders()
 	{	

@@ -345,7 +345,7 @@ With the above command you will have all your dependencies updated.
 
 ## Up Next ##
 
-Setting **Webhooks** these will help you to write code for the callbackUrl. For info contact me at the email provided bellow.
+Setting **Webhooks** these will help you to write code for the callbackUrl. For more info contact me at the email provided bellow.
 
 Check in for updates.
 
