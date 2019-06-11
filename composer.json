@@ -16,11 +16,17 @@
           "mobile money api"
       ],
     "minimum-stability": "dev",
+    "homepage": "https://github.com/linlak/momoapi",
+    "support": {
+        "issues": "https://github.com/linlak/momoapi/issues",
+        "source": "https://github.com/linlak/momoapi"
+    },
     "license": "MIT",
     "authors": [
         {
             "name": "Linus Nowomukama",
-            "email": "nowomukama.linlak.linus2@gmail.com"
+            "email": "nowomukama.linlak.linus2@gmail.com",
+            "role": "Developer"
         }
     ],
     "type": "library",
@@ -34,6 +40,7 @@
 		"phpunit/phpunit": "5.2.*"
     },
   "config":{
+    "sort-packages": true,
     "preferred-install": "dist"
   },
 	"autoload": {
